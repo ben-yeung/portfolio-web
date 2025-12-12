@@ -722,3 +722,17 @@ body.light .customCursor {
 		padding: 2rem 1.5rem;
 	}
 }
+
+@media (hover: none) and (pointer: coarse) {
+	.container {
+		cursor: auto;
+	}
+
+	.container * {
+		cursor: auto;
+	}
+
+	.customCursor {
+		display: none;
+	}
+}
