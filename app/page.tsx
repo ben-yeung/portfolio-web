@@ -207,7 +207,7 @@ export default function Home() {
 						<div className={styles.aboutBio}>
 							<p>I'm a full-stack developer building streamlined user experiences in web2 and web3.</p>
 							<p>
-								UC Berkeley alumni with a degree in CS. <br /> -- Go Bears! 🐻
+								UC Berkeley alum with a degree in CS. <br /> -- Go Bears! 🐻
 							</p>
 							<p>I love building mechanical keyboards and smaller form factor PCs whenever I can.</p>
 							<p className={styles.dailyDriver}>
