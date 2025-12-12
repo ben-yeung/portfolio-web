@@ -58,6 +58,7 @@ export default function Home() {
 	const [hoveredStack, setHoveredStack] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
+	const [startTypewriter, setStartTypewriter] = useState(false);
 
 	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer."];
 
@@ -67,6 +68,16 @@ export default function Home() {
 	}, [isDark]);
 
 	useEffect(() => {
+		const typewriterDelay = setTimeout(() => {
+			setStartTypewriter(true);
+		}, 1200);
+
+		return () => clearTimeout(typewriterDelay);
+	}, []);
+
+	useEffect(() => {
+		if (!startTypewriter) return;
+
 		let timeout: NodeJS.Timeout;
 		const currentFullText = titles[currentTitle];
 
@@ -92,7 +103,7 @@ export default function Home() {
 		}
 
 		return () => clearTimeout(timeout);
-	}, [displayedText, isTyping, currentTitle, titles]);
+	}, [displayedText, isTyping, currentTitle, titles, startTypewriter]);
 
 	useEffect(() => {
 		if (submitStatus) {
@@ -137,18 +148,18 @@ export default function Home() {
 
 			<motion.section id="home" className={styles.heroSection}>
 				<div className={styles.heroContent}>
-					<motion.p className={styles.heroGreeting} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
+					<motion.p className={styles.heroGreeting} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}>
 						Hey, I'm
 					</motion.p>
-					<motion.h1 className={styles.heroName} initial={fadeInUp.initial} animate={fadeInUp.animate} transition={{ duration: 0.8, delay: 0.4 }}>
+					<motion.h1 className={styles.heroName} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}>
 						Ben Yeung
 					</motion.h1>
-					<div className={styles.rotatingTitleContainer}>
+					<motion.div className={styles.rotatingTitleContainer} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8, ease: "easeOut" }}>
 						<h2 className={styles.rotatingTitle}>
 							{displayedText}
 							<span className={styles.cursor}>|</span>
 						</h2>
-					</div>
+					</motion.div>
 				</div>
 			</motion.section>
 
