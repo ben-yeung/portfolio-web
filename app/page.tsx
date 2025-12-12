@@ -59,6 +59,8 @@ export default function Home() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
 	const [startTypewriter, setStartTypewriter] = useState(false);
+	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	const [isHoveringClickable, setIsHoveringClickable] = useState(false);
 
 	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer."];
 
@@ -115,6 +117,22 @@ export default function Home() {
 		}
 	}, [submitStatus]);
 
+	useEffect(() => {
+		const handleMouseMove = (e: MouseEvent) => {
+			setMousePosition({ x: e.clientX, y: e.clientY });
+
+			const target = e.target as HTMLElement;
+			const isClickable = target.tagName === "A" || target.tagName === "BUTTON" || target.closest("a") || target.closest("button") || target.onclick !== null || target.style.cursor === "pointer";
+			setIsHoveringClickable(!!isClickable);
+		};
+
+		window.addEventListener("mousemove", handleMouseMove);
+
+		return () => {
+			window.removeEventListener("mousemove", handleMouseMove);
+		};
+	}, []);
+
 	const handleToggleTheme = () => {
 		setIsDark(!isDark);
 	};
@@ -140,6 +158,19 @@ export default function Home() {
 
 	return (
 		<div className={styles.container}>
+			<div
+				className={styles.mouseHighlight}
+				style={{
+					background: isDark ? `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(245, 235, 225, 0.15), transparent 80%)` : `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(135, 117, 100, 0.35), transparent 80%)`,
+				}}
+			/>
+			<div
+				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""}`}
+				style={{
+					left: `${mousePosition.x}px`,
+					top: `${mousePosition.y}px`,
+				}}
+			/>
 			<Navbar />
 
 			<motion.button className={`${styles.themeToggle} themeToggle`} onClick={handleToggleTheme} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Toggle Theme">

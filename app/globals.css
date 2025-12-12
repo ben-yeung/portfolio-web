@@ -36,6 +36,23 @@ body.dark {
 	--input-focus-bg: #3f3f46;
 	--accent-color: #877564;
 	--text-primary: #ffffff;
+
+	/* Project Card Variables */
+	--project-card-bg: rgba(255, 255, 255, 0.03);
+	--project-card-border: rgba(255, 255, 255, 0.08);
+	--project-card-hover-bg: rgba(255, 255, 255, 0.05);
+	--project-card-hover-border: rgba(255, 255, 255, 0.2);
+	--project-card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+	/* Project Image Variables */
+	--project-image-bg: rgba(255, 255, 255, 0.05);
+
+	/* Tech Badge Variables */
+	--tech-badge-bg: rgba(255, 255, 255, 0.08);
+
+	/* Stack Icon Variables */
+	--stack-icon-bg: rgba(255, 255, 255, 0.05);
+	--stack-icon-hover-bg: rgba(255, 255, 255, 0.1);
 }
 
 body.light {
@@ -46,6 +63,23 @@ body.light {
 	--input-focus-bg: #ffffff;
 	--accent-color: #877564;
 	--text-primary: #27272a;
+
+	/* Project Card Variables */
+	--project-card-bg: rgba(0, 0, 0, 0.05);
+	--project-card-border: rgba(0, 0, 0, 0.1);
+	--project-card-hover-bg: rgba(0, 0, 0, 0.12);
+	--project-card-hover-border: rgba(0, 0, 0, 0.15);
+	--project-card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+
+	/* Project Image Variables */
+	--project-image-bg: rgba(0, 0, 0, 0.05);
+
+	/* Tech Badge Variables */
+	--tech-badge-bg: rgba(0, 0, 0, 0.1);
+
+	/* Stack Icon Variables */
+	--stack-icon-bg: rgba(0, 0, 0, 0.05);
+	--stack-icon-hover-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* Switcher/Button Styles */
@@ -95,4 +129,8 @@ body.light nav {
 	background: #f5ebe1 !important;
 	border: 1px solid rgba(0, 0, 0, 0.1) !important;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light nav a::after {
+	background-color: #877564 !important;
 }

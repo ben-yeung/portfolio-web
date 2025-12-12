@@ -19,7 +19,7 @@ const Footer = () => {
 					<a href="https://github.com/ben-yeung" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="GitHub">
 						<FaGithub />
 					</a>
-					<a href={data?.isPlaying ? data.songUrl : "https://open.spotify.com/user/benyeung"} target="_blank" rel="noopener noreferrer" className={styles.spotifyWidget} aria-label="Spotify">
+					<a href={data?.isPlaying ? data.songUrl : "https://open.spotify.com/"} target="_blank" rel="noopener noreferrer" className={styles.spotifyWidget} aria-label="Spotify">
 						<div className={styles.spotifyIcon}>
 							<BsSpotify />
 						</div>
