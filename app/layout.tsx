@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Didact_Gothic, Geist_Mono, Halant } from "next/font/google";
+import { Didact_Gothic, EB_Garamond, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const didactGothic = Didact_Gothic({
@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 	subsets: ["latin"],
 });
 
-const halant = Halant({
-	variable: "--font-halant",
+const ebGaramond = EB_Garamond({
+	variable: "--font-serif",
 	subsets: ["latin"],
 	weight: ["400", "500", "600"],
 });
@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${didactGothic.variable} ${geistMono.variable} ${halant.variable} dark`} suppressHydrationWarning>
+			<body className={`${didactGothic.variable} ${geistMono.variable} ${ebGaramond.variable} dark`} suppressHydrationWarning>
 				{children}
 			</body>
 		</html>

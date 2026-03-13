@@ -48,6 +48,14 @@ const projects = [
 		image: "/assets/paymaster.png",
 		link: "https://github.com/novusys/novusys-paymaster",
 	},
+	{
+		id: 5,
+		title: "/nft-vision",
+		description: "A Discord bot capable of scraping NFT floor prices based on metadata filters, normalized rankings, and marketplaces.",
+		tech: ["TypeScript", "Python", "DiscordJS", "MongoDB"],
+		image: "/assets/vision2.png",
+		link: "https://github.com/ben-yeung/nft-vision-discord",
+	},
 ];
 
 export default function Home() {
@@ -152,7 +160,7 @@ export default function Home() {
 				console.log(error.text);
 				setSubmitStatus("error");
 				setIsSubmitting(false);
-			}
+			},
 		);
 	};
 

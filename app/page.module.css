@@ -28,7 +28,10 @@
 	pointer-events: none;
 	z-index: 10000;
 	transform: translate(-50%, -50%);
-	transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+	transition:
+		width 0.2s ease,
+		height 0.2s ease,
+		opacity 0.2s ease;
 }
 
 .customCursor.cursorHover {
@@ -90,7 +93,7 @@ body.light .customCursor {
 	line-height: 1;
 	margin: 0;
 	letter-spacing: -0.02em;
-	font-family: var(--font-halant), serif;
+	font-family: var(--font-serif), serif;
 }
 
 .rotatingTitleContainer {
@@ -152,7 +155,9 @@ body.light .customCursor {
 	aspect-ratio: 1;
 	border-radius: 2rem;
 	overflow: hidden;
-	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+	box-shadow:
+		0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 .aboutImage img {
@@ -174,7 +179,7 @@ body.light .customCursor {
 	line-height: 1.1;
 	margin: 0;
 	letter-spacing: -0.02em;
-	font-family: var(--font-halant), serif;
+	font-family: var(--font-serif), serif;
 }
 
 .aboutBio {
@@ -318,7 +323,7 @@ body.light .customCursor {
 	line-height: 1.1;
 	margin: 0;
 	letter-spacing: -0.02em;
-	font-family: var(--font-halant), serif;
+	font-family: var(--font-serif), serif;
 	text-align: center;
 }
 
@@ -609,7 +614,7 @@ body.light .customCursor {
 	line-height: 1.1;
 	margin: 0;
 	letter-spacing: -0.02em;
-	font-family: var(--font-halant), serif;
+	font-family: var(--font-serif), serif;
 }
 
 .contactDescription {

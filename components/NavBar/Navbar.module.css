@@ -5,8 +5,11 @@
 	transform: translateX(-50%);
 	z-index: 9999;
 	padding: 0 1.5rem;
-	border-radius: 20px;
-	transition: background 500ms, border-color 500ms, box-shadow 500ms;
+	border-radius: 40px;
+	transition:
+		background 500ms,
+		border-color 500ms,
+		box-shadow 500ms;
 	height: 3.5rem;
 }
 
