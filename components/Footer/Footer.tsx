@@ -40,7 +40,7 @@ const Footer = () => {
 				<div className={styles.divider}></div>
 
 				<div className={styles.copyright}>
-					<p>© 2025 Made with ❤️ by Ben Yeung</p>
+					<p>© {new Date().getFullYear()} Made with ❤️ by Ben Yeung</p>
 				</div>
 			</div>
 		</footer>
