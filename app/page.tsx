@@ -16,6 +16,8 @@ const fadeInUp = {
 	animate: { opacity: 1, y: 0 },
 };
 
+const messagePlaceholders = ["Your next big idea...", "Your follow-up question...", "A project proposal...", "Just saying hello...", "Let's build something..."];
+
 const projects = [
 	{
 		id: 1,
@@ -71,6 +73,9 @@ export default function Home() {
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [isHoveringClickable, setIsHoveringClickable] = useState(false);
 	const [isMouseDown, setIsMouseDown] = useState(false);
+	const [placeholderIndex, setPlaceholderIndex] = useState(0);
+	const [isPlaceholderFading, setIsPlaceholderFading] = useState(false);
+	const [isMessageFocused, setIsMessageFocused] = useState(false);
 
 	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
 
@@ -126,6 +131,24 @@ export default function Home() {
 			return () => clearTimeout(timeout);
 		}
 	}, [submitStatus]);
+
+	useEffect(() => {
+		if (isMessageFocused) return;
+
+		let swap: ReturnType<typeof setTimeout>;
+		const interval = setInterval(() => {
+			setIsPlaceholderFading(true);
+			swap = setTimeout(() => {
+				setPlaceholderIndex((i) => (i + 1) % messagePlaceholders.length);
+				setIsPlaceholderFading(false);
+			}, 400);
+		}, 3500);
+
+		return () => {
+			clearInterval(interval);
+			clearTimeout(swap);
+		};
+	}, [isMessageFocused]);
 
 	useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
@@ -324,7 +347,16 @@ export default function Home() {
 							<label htmlFor="message" className={styles.formLabel}>
 								Message
 							</label>
-							<textarea id="message" name="message" className={styles.formTextarea} placeholder="Your message here..." required aria-label="Message" />
+							<textarea
+								id="message"
+								name="message"
+								className={`${styles.formTextarea} ${isPlaceholderFading ? styles.placeholderFading : ""}`}
+								placeholder={messagePlaceholders[placeholderIndex]}
+								onFocus={() => setIsMessageFocused(true)}
+								onBlur={() => setIsMessageFocused(false)}
+								required
+								aria-label="Message"
+							/>
 						</div>
 
 						<button type="submit" className={styles.submitButton} disabled={isSubmitting} aria-label="Submit form">

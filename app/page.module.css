@@ -678,6 +678,15 @@ body.light .customCursor {
 	resize: vertical;
 }
 
+.formTextarea::placeholder {
+	opacity: 1;
+	transition: opacity 0.4s ease;
+}
+
+.placeholderFading::placeholder {
+	opacity: 0;
+}
+
 .submitButton {
 	padding: 1rem 2rem;
 	font-size: 1.1rem;
