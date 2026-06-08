@@ -21,31 +21,37 @@
 
 .customCursor {
 	position: fixed;
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: var(--text-primary);
+	font-size: 22px;
+	line-height: 1;
+	color: var(--text-primary);
 	pointer-events: none;
 	z-index: 10000;
-	transform: translate(-50%, -50%);
+	/* offset so the fingertip sits on the actual pointer location */
+	transform: translate(-32%, -8%) rotate(-12deg);
+	transform-origin: 32% 8%;
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
 	transition:
-		width 0.2s ease,
-		height 0.2s ease,
-		opacity 0.2s ease;
+		transform 0.18s ease,
+		color 0.2s ease,
+		font-size 0.18s ease;
 }
 
 .customCursor.cursorHover {
-	width: 32px;
-	height: 32px;
-	opacity: 0.5;
+	font-size: 25px;
+	transform: translate(-32%, -8%) rotate(-12deg) scale(1.1);
+}
+
+.customCursor.cursorClick {
+	font-size: 28px;
+	transform: translate(-32%, -8%) rotate(-12deg) scale(0.85);
 }
 
 body.dark .customCursor {
-	background: rgba(255, 255, 255, 0.8);
+	color: rgba(255, 255, 255, 0.9);
 }
 
 body.light .customCursor {
-	background: rgba(0, 0, 0, 0.8);
+	color: rgba(30, 24, 18, 0.9);
 }
 
 .themeToggle {
@@ -57,7 +63,7 @@ body.light .customCursor {
 	border-radius: 50%;
 	background: transparent;
 	border: none;
-	cursor: pointer;
+	cursor: none;
 	display: flex;
 	align-items: center;
 	justify-content: center;

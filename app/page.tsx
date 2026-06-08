@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { HiSun, HiMoon } from "react-icons/hi";
 import { SiReact, SiNextdotjs, SiNodedotjs, SiTailwindcss, SiMongodb, SiJavascript, SiTypescript, SiSelenium } from "react-icons/si";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
+import { FaRegHand, FaRegHandPointer, FaRegHandBackFist } from "react-icons/fa6";
 import emailjs from "@emailjs/browser";
 import styles from "./page.module.css";
 import Navbar from "@/components/NavBar/Navbar";
@@ -69,8 +70,9 @@ export default function Home() {
 	const [startTypewriter, setStartTypewriter] = useState(false);
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 	const [isHoveringClickable, setIsHoveringClickable] = useState(false);
+	const [isMouseDown, setIsMouseDown] = useState(false);
 
-	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer."];
+	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
 
 	useEffect(() => {
 		document.body.classList.remove("dark", "light");
@@ -95,7 +97,7 @@ export default function Home() {
 			if (displayedText.length < currentFullText.length) {
 				timeout = setTimeout(() => {
 					setDisplayedText(currentFullText.slice(0, displayedText.length + 1));
-				}, 100);
+				}, 65);
 			} else {
 				timeout = setTimeout(() => {
 					setIsTyping(false);
@@ -134,10 +136,17 @@ export default function Home() {
 			setIsHoveringClickable(!!isClickable);
 		};
 
+		const handleMouseDown = () => setIsMouseDown(true);
+		const handleMouseUp = () => setIsMouseDown(false);
+
 		window.addEventListener("mousemove", handleMouseMove);
+		window.addEventListener("mousedown", handleMouseDown);
+		window.addEventListener("mouseup", handleMouseUp);
 
 		return () => {
 			window.removeEventListener("mousemove", handleMouseMove);
+			window.removeEventListener("mousedown", handleMouseDown);
+			window.removeEventListener("mouseup", handleMouseUp);
 		};
 	}, []);
 
@@ -173,12 +182,14 @@ export default function Home() {
 				}}
 			/>
 			<div
-				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""}`}
+				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
 				style={{
 					left: `${mousePosition.x}px`,
 					top: `${mousePosition.y}px`,
 				}}
-			/>
+			>
+				{isMouseDown ? <FaRegHandBackFist /> : isHoveringClickable ? <FaRegHandPointer /> : <FaRegHand />}
+			</div>
 			<Navbar />
 
 			<motion.button className={`${styles.themeToggle} themeToggle`} onClick={handleToggleTheme} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-label="Toggle Theme">
