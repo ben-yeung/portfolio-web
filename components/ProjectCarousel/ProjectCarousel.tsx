@@ -13,7 +13,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 	const [rowTop, rowBottom] = splitRows(projects);
 
 	return (
-		<div className={styles.carousel} aria-label="Projects">
+		<div className={styles.carousel} role="region" aria-label="Projects carousel">
 			<CarouselRow projects={rowTop} direction={1} inView={true} />
 			<CarouselRow projects={rowBottom} direction={-1} inView={true} />
 		</div>
