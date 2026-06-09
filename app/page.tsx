@@ -302,15 +302,15 @@ export default function Home() {
 				</div>
 			</motion.section>
 
-			<motion.section id="projects" className={styles.projectsSection} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.3 }}>
+			<section id="projects" className={styles.projectsSection}>
 				<div className={styles.projectsContainer}>
-					<motion.h2 className={styles.projectsTitle} variants={fadeInUp} transition={{ duration: 0.8 }}>
+					<motion.h2 className={styles.projectsTitle} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.6 }} transition={{ duration: 0.8 }}>
 						Projects
 					</motion.h2>
 
 					<div className={styles.projectsGrid}>
 						{projects.map((project, index) => (
-							<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} transition={{ duration: 0.6, delay: index * 0.1 }}>
+							<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
 								<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
 									<div className={styles.projectImageWrapper}>
 										<img src={project.image} alt={project.title} className={styles.projectImage} />
@@ -336,7 +336,7 @@ export default function Home() {
 						))}
 					</div>
 				</div>
-			</motion.section>
+			</section>
 
 			<motion.section id="contact" className={styles.contactSection} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.3 }}>
 				<div className={styles.contactContainer}>
