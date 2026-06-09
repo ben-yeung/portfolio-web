@@ -54,6 +54,8 @@ export default function DotControls() {
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
+		// Mount-only matchMedia probe: an intentional one-shot setState so the client-only
+		// support flag is resolved after hydration (never during SSR), avoiding a mismatch.
 		// eslint-disable-next-line react-hooks/set-state-in-effect
 		setSupported(dotGridSupported());
 	}, []);
@@ -82,10 +84,12 @@ export default function DotControls() {
 	const handleChange = (key: NumericKey, raw: string) => {
 		const value = Number(raw);
 		setValues((v) => ({ ...v, [key]: value }));
-		setParams({ [key]: value } as Partial<DotGridParams>);
+		setParams({ [key]: value } as Pick<DotGridParams, NumericKey>);
 	};
 
 	const handleReset = () => {
+		// Full reset to factory defaults — also clears any dev-bridge tuning of the params
+		// the panel doesn't surface (push / fade / falloff / colors), not just the six sliders.
 		setParams(DEFAULTS);
 		setValues(readValues());
 	};

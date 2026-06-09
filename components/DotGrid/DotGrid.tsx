@@ -47,7 +47,7 @@ export default function DotGrid() {
 
 		const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 		let dots: Dot[] = [];
-		let lastSpacing = 0;
+		let lastSpacing = 0; // owned by buildGrid(); the spacing-rebuild subscriber reads it
 		const followers: Follower[] = Array.from({ length: FOLLOWER_COUNT }, () => ({ x: -9999, y: -9999 }));
 		const mouse = { x: -9999, y: -9999 };
 
