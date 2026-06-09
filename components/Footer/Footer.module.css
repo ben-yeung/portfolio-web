@@ -39,6 +39,15 @@
 	transform: translateY(-2px);
 }
 
+/* tft.png tinted to the theme color via mask (white in dark, dark in light) */
+.tftIcon {
+	width: 1em;
+	height: 1em;
+	background-color: var(--text-primary);
+	-webkit-mask: url(/assets/tft.png) center / contain no-repeat;
+	mask: url(/assets/tft.png) center / contain no-repeat;
+}
+
 .spotifyWidget {
 	display: inline-flex;
 	align-items: center;
