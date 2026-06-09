@@ -127,8 +127,8 @@ body.dark nav {
 	background-origin: border-box !important;
 	background-clip: padding-box, border-box !important;
 	border: 1px solid transparent !important;
-	-webkit-backdrop-filter: blur(18px) saturate(170%);
-	backdrop-filter: blur(18px) saturate(170%);
+	-webkit-backdrop-filter: blur(10px) saturate(170%);
+	backdrop-filter: blur(10px) saturate(170%);
 	box-shadow:
 		0 8px 32px rgba(0, 0, 0, 0.32),
 		inset 0 1px 0 rgba(132, 130, 136, 0.35),
@@ -142,8 +142,8 @@ body.light nav {
 	background-origin: border-box !important;
 	background-clip: padding-box, border-box !important;
 	border: 1px solid transparent !important;
-	-webkit-backdrop-filter: blur(18px) saturate(150%);
-	backdrop-filter: blur(18px) saturate(150%);
+	-webkit-backdrop-filter: blur(10px) saturate(150%);
+	backdrop-filter: blur(10px) saturate(150%);
 	box-shadow:
 		0 8px 30px rgba(0, 0, 0, 0.12),
 		inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
