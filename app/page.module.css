@@ -8,17 +8,6 @@
 	cursor: none;
 }
 
-.mouseHighlight {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	z-index: 0;
-	transition: background 0.1s ease;
-}
-
 .customCursor {
 	position: fixed;
 	font-size: 22px;

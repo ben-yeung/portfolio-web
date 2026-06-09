@@ -10,6 +10,7 @@ import emailjs from "@emailjs/browser";
 import styles from "./page.module.css";
 import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import DotGrid from "@/components/DotGrid/DotGrid";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -214,12 +215,7 @@ export default function Home() {
 
 	return (
 		<div className={styles.container}>
-			<div
-				className={styles.mouseHighlight}
-				style={{
-					background: isDark ? `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(245, 235, 225, 0.15), transparent 80%)` : `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(135, 117, 100, 0.35), transparent 80%)`,
-				}}
-			/>
+			<DotGrid />
 			<div
 				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
 				style={{
