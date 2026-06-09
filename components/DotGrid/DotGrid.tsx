@@ -38,11 +38,13 @@ export default function DotGrid() {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		// Disable on reduced-motion and on devices without a fine pointer (touch),
-		// matching how the custom cursor is already disabled on mobile.
+		// Disable entirely only on true touch-only devices — the same media query
+		// that hides the custom cursor (app/page.module.css). Under reduced-motion we
+		// do NOT disable; frame() keeps the full fluid blob + wake but turns off the
+		// dot displacement (push) so nothing flies around.
+		const isTouchOnly = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+		if (isTouchOnly) return;
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		const finePointer = window.matchMedia("(pointer: fine)").matches;
-		if (reduceMotion || !finePointer) return;
 
 		const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 		let dots: Dot[] = [];
@@ -94,6 +96,10 @@ export default function DotGrid() {
 					f.y = mouse.y;
 				}
 			}
+			// Reduced-motion keeps the full fluid blob + trailing wake, but disables the
+			// dot displacement (push) so dots reveal in place instead of flying around.
+			const pushAmt = reduceMotion ? 0 : p.push;
+
 			// Head tracks the pointer; each tail follower trails the previous one.
 			// Higher wake => smaller tailEase => longer streak when moving fast.
 			followers[0].x += (mouse.x - followers[0].x) * HEAD_EASE;
@@ -140,7 +146,7 @@ export default function DotGrid() {
 				let grow = 1;
 				if (target > 0.01) {
 					const headDist = distHead || 0.0001;
-					const force = p.push * (reveal > p.baseOpacity ? reveal : 0);
+					const force = pushAmt * (reveal > p.baseOpacity ? reveal : 0);
 					ox = ((d.x - head.x) / headDist) * force;
 					oy = ((d.y - head.y) / headDist) * force;
 					grow = 1 + (p.grow - 1) * target;

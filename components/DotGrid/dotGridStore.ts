@@ -40,7 +40,7 @@ export const DEFAULTS: DotGridParams = {
 	fade: 0.28,
 	falloff: 0.87,
 	baseOpacity: 0,
-	colorDark: [245, 235, 225], // cream
+	colorDark: [78, 82, 92], // dark space grey (muted, keeps text readable over dots)
 	colorLight: [135, 117, 100], // accent #877564
 };
 
