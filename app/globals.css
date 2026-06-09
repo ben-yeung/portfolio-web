@@ -31,17 +31,21 @@ body {
 body.dark {
 	background-color: #18181b;
 	color: #ffffff;
-	--input-bg: #27272a;
+	--input-bg: rgba(39, 39, 42, 0.45);
 	--input-border: rgba(255, 255, 255, 0.15);
-	--input-focus-bg: #3f3f46;
+	--input-focus-bg: rgba(63, 63, 70, 0.6);
+	--input-focus-border: rgb(128, 140, 162);
 	--accent-color: #877564;
 	--text-primary: #ffffff;
 
-	/* Project Card Variables */
-	--project-card-bg: rgba(255, 255, 255, 0.03);
-	--project-card-border: rgba(255, 255, 255, 0.08);
-	--project-card-hover-bg: rgba(255, 255, 255, 0.05);
-	--project-card-hover-border: rgba(255, 255, 255, 0.2);
+	/* Liquid-glass tokens (navbar tint) — shared by project cards, stack buttons, submit button */
+	--glass-surface: linear-gradient(180deg, rgba(37, 39, 44, 0.7), rgba(22, 24, 29, 0.55));
+	--glass-surface-hover: linear-gradient(180deg, rgba(37, 39, 44, 0.82), rgba(22, 24, 29, 0.68));
+	--glass-edge: linear-gradient(180deg, rgba(124, 128, 138, 0.6), rgba(124, 128, 138, 0.34) 20%, rgba(124, 128, 138, 0.2) 45%, rgba(124, 128, 138, 0.1) 70%, rgba(124, 128, 138, 0.06));
+	--glass-inset: inset 0 1px 0 rgba(124, 128, 138, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+	/* Bottom-lit variants — project cards put the highlight on the bottom to round out the description area */
+	--glass-edge-bottom: linear-gradient(0deg, rgba(124, 128, 138, 0.6), rgba(124, 128, 138, 0.34) 20%, rgba(124, 128, 138, 0.2) 45%, rgba(124, 128, 138, 0.1) 70%, rgba(124, 128, 138, 0.06));
+	--glass-inset-bottom: inset 0 -1px 0 rgba(124, 128, 138, 0.35), inset 0 1px 0 rgba(0, 0, 0, 0.15);
 	--project-card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 
 	/* Project Image Variables */
@@ -49,26 +53,26 @@ body.dark {
 
 	/* Tech Badge Variables */
 	--tech-badge-bg: rgba(255, 255, 255, 0.08);
-
-	/* Stack Icon Variables */
-	--stack-icon-bg: rgba(255, 255, 255, 0.05);
-	--stack-icon-hover-bg: rgba(255, 255, 255, 0.1);
 }
 
 body.light {
 	background-color: #f5ebe1;
 	color: #27272a;
-	--input-bg: #ffffff;
+	--input-bg: rgba(255, 255, 255, 0.5);
 	--input-border: rgba(0, 0, 0, 0.15);
-	--input-focus-bg: #ffffff;
+	--input-focus-bg: rgba(255, 255, 255, 0.68);
+	--input-focus-border: rgb(108, 122, 148);
 	--accent-color: #877564;
 	--text-primary: #27272a;
 
-	/* Project Card Variables */
-	--project-card-bg: rgba(0, 0, 0, 0.05);
-	--project-card-border: rgba(0, 0, 0, 0.1);
-	--project-card-hover-bg: rgba(0, 0, 0, 0.12);
-	--project-card-hover-border: rgba(0, 0, 0, 0.15);
+	/* Liquid-glass tokens (warm, matches the light navbar) — shared by project cards, stack buttons, submit button */
+	--glass-surface: linear-gradient(180deg, rgba(247, 236, 222, 0.62), rgba(231, 210, 182, 0.2));
+	--glass-surface-hover: linear-gradient(180deg, rgba(247, 236, 222, 0.78), rgba(231, 210, 182, 0.26));
+	--glass-edge: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.34) 45%, rgba(190, 168, 150, 0.26) 72%, rgba(135, 117, 100, 0.22));
+	--glass-inset: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+	/* Bottom-lit variants — project cards put the highlight on the bottom to round out the description area */
+	--glass-edge-bottom: linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.34) 45%, rgba(190, 168, 150, 0.26) 72%, rgba(135, 117, 100, 0.22));
+	--glass-inset-bottom: inset 0 -1px 1px rgba(255, 255, 255, 0.7);
 	--project-card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 
 	/* Project Image Variables */
@@ -76,10 +80,6 @@ body.light {
 
 	/* Tech Badge Variables */
 	--tech-badge-bg: rgba(0, 0, 0, 0.1);
-
-	/* Stack Icon Variables */
-	--stack-icon-bg: rgba(0, 0, 0, 0.05);
-	--stack-icon-hover-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* Switcher/Button Styles */
@@ -121,9 +121,8 @@ body.dark .themeToggle {
 /* Navbar Theme Styles — liquid glass */
 body.dark nav {
 	/* layer 1 (padding-box): translucent surface; layer 2 (border-box): gradient-lit edge */
-	background-image:
-		linear-gradient(180deg, rgba(39, 39, 42, 0.7), rgba(24, 24, 27, 0.55)),
-		linear-gradient(180deg, rgba(132, 130, 136, 0.6), rgba(132, 130, 136, 0.34) 20%, rgba(132, 130, 136, 0.2) 45%, rgba(132, 130, 136, 0.1) 70%, rgba(132, 130, 136, 0.06)) !important;
+	/* Shares the global glass tokens with the project cards / stack & submit buttons. */
+	background-image: var(--glass-surface), var(--glass-edge) !important;
 	background-origin: border-box !important;
 	background-clip: padding-box, border-box !important;
 	border: 1px solid transparent !important;
@@ -131,14 +130,12 @@ body.dark nav {
 	backdrop-filter: blur(10px) saturate(170%);
 	box-shadow:
 		0 8px 32px rgba(0, 0, 0, 0.32),
-		inset 0 1px 0 rgba(132, 130, 136, 0.35),
-		inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+		var(--glass-inset) !important;
 }
 
 body.light nav {
-	background-image:
-		linear-gradient(180deg, rgba(245, 235, 225, 0.6), rgba(135, 117, 100, 0.14)),
-		linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.34) 45%, rgba(190, 168, 150, 0.26) 72%, rgba(135, 117, 100, 0.22)) !important;
+	/* Shares the global glass tokens with the project cards / stack & submit buttons. */
+	background-image: var(--glass-surface), var(--glass-edge) !important;
 	background-origin: border-box !important;
 	background-clip: padding-box, border-box !important;
 	border: 1px solid transparent !important;
@@ -146,15 +143,15 @@ body.light nav {
 	backdrop-filter: blur(10px) saturate(150%);
 	box-shadow:
 		0 8px 30px rgba(0, 0, 0, 0.12),
-		inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
+		var(--glass-inset) !important;
 }
 
 /* No backdrop-filter: fall back to a more opaque surface so text stays legible */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
 	body.dark nav {
 		background-image:
-			linear-gradient(180deg, rgba(40, 40, 45, 0.92), rgba(30, 30, 34, 0.92)),
-			linear-gradient(180deg, rgba(132, 130, 136, 0.6), rgba(132, 130, 136, 0.34) 20%, rgba(132, 130, 136, 0.2) 45%, rgba(132, 130, 136, 0.1) 70%, rgba(132, 130, 136, 0.06)) !important;
+			linear-gradient(180deg, rgba(38, 40, 45, 0.92), rgba(28, 30, 35, 0.92)),
+			linear-gradient(180deg, rgba(124, 128, 138, 0.6), rgba(124, 128, 138, 0.34) 20%, rgba(124, 128, 138, 0.2) 45%, rgba(124, 128, 138, 0.1) 70%, rgba(124, 128, 138, 0.06)) !important;
 	}
 	body.light nav {
 		background-image:

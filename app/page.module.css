@@ -8,17 +8,6 @@
 	cursor: none;
 }
 
-.mouseHighlight {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	z-index: 0;
-	transition: background 0.1s ease;
-}
-
 .customCursor {
 	position: fixed;
 	font-size: 22px;
@@ -100,6 +89,16 @@ body.light .customCursor {
 	margin: 0;
 	letter-spacing: -0.02em;
 	font-family: var(--font-serif), serif;
+}
+
+.nameUnder {
+	/* Drop "Yeung" behind the dot canvas (z-index: -1) so the dots render over it,
+	   while "Ben" and the rest of the page stay in front. This relies on no
+	   transformed ancestor between here and the root — heroName uses an
+	   opacity-only entrance (no y-translate) precisely so it stays in the root
+	   stacking context. */
+	position: relative;
+	z-index: -2;
 }
 
 .rotatingTitleContainer {
@@ -228,13 +227,20 @@ body.light .customCursor {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--stack-icon-bg);
+	/* Liquid-glass surface matching the navbar / project cards. */
+	background-image: var(--glass-surface), var(--glass-edge);
+	background-origin: border-box;
+	background-clip: padding-box, border-box;
+	border: 1px solid transparent;
 	border-radius: 0.5rem;
+	-webkit-backdrop-filter: blur(3px) saturate(120%);
+	backdrop-filter: blur(3px) saturate(120%);
+	box-shadow: var(--glass-inset);
 	transition: all 0.3s ease;
 }
 
 .stackIcon:hover {
-	background-color: var(--stack-icon-hover-bg);
+	background-image: var(--glass-surface-hover), var(--glass-edge);
 	transform: translateY(-2px);
 }
 
@@ -342,17 +348,25 @@ body.light .customCursor {
 }
 
 .projectCard {
-	background: var(--project-card-bg);
-	border: 1px solid var(--project-card-border);
+	/* Liquid-glass surface matching the navbar, but with the lit edge on the BOTTOM
+	   to round out the description area: translucent surface clipped to padding-box,
+	   bottom-lit gradient edge clipped to border-box. */
+	background-image: var(--glass-surface), var(--glass-edge-bottom);
+	background-origin: border-box;
+	background-clip: padding-box, border-box;
+	border: 1px solid transparent;
 	border-radius: 1rem;
 	overflow: hidden;
+	/* Frost the dot grid behind the card so description text stays readable. */
+	-webkit-backdrop-filter: blur(3px) saturate(120%);
+	backdrop-filter: blur(3px) saturate(120%);
+	box-shadow: var(--glass-inset-bottom);
 	transition: all 0.3s ease;
 }
 
 .projectCard:hover {
-	background: var(--project-card-hover-bg);
-	border-color: var(--project-card-hover-border);
-	box-shadow: var(--project-card-hover-shadow);
+	background-image: var(--glass-surface-hover), var(--glass-edge-bottom);
+	box-shadow: var(--project-card-hover-shadow), var(--glass-inset-bottom);
 }
 
 .projectCardLink {
@@ -373,11 +387,6 @@ body.light .customCursor {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	transition: transform 0.4s ease;
-}
-
-.projectCard:hover .projectImage {
-	transform: scale(1.05);
 }
 
 .projectOverlay {
@@ -660,6 +669,8 @@ body.light .customCursor {
 	font-size: 1rem;
 	font-family: inherit;
 	background: var(--input-bg);
+	-webkit-backdrop-filter: blur(8px) saturate(120%);
+	backdrop-filter: blur(8px) saturate(120%);
 	border: 2px solid var(--input-border);
 	border-radius: 0.5rem;
 	color: var(--text-primary);
@@ -669,7 +680,7 @@ body.light .customCursor {
 .formInput:focus,
 .formTextarea:focus {
 	outline: none;
-	border-color: var(--accent-color);
+	border-color: var(--input-focus-border);
 	background: var(--input-focus-bg);
 }
 
@@ -691,21 +702,30 @@ body.light .customCursor {
 	padding: 1rem 2rem;
 	font-size: 1.1rem;
 	font-weight: 500;
-	background: var(--accent-color);
-	color: white;
-	border: none;
+	/* Liquid-glass surface matching the navbar / cards. Theme-aware text color so
+	   it stays readable on both the dark slate and light warm glass. Reset the
+	   native button appearance + background-color so the default opaque ButtonFace
+	   doesn't show through the translucent glass (this is what made it differ from
+	   the stack <div> buttons). */
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: transparent;
+	background-image: var(--glass-surface), var(--glass-edge);
+	background-origin: border-box;
+	background-clip: padding-box, border-box;
+	border: 1px solid transparent;
+	color: var(--text-primary);
 	border-radius: 0.5rem;
+	-webkit-backdrop-filter: blur(3px) saturate(120%);
+	backdrop-filter: blur(3px) saturate(120%);
+	box-shadow: var(--glass-inset);
 	transition: all 0.3s ease;
 	margin-top: 0.5rem;
 }
 
 .submitButton:hover:not(:disabled) {
-	transform: translateY(-2px);
-	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.submitButton:active:not(:disabled) {
-	transform: translateY(0);
+	background-image: var(--glass-surface-hover), var(--glass-edge);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), var(--glass-inset);
 }
 
 .submitButton:disabled {

@@ -1,0 +1,12 @@
+.dotCanvas {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	/* Behind all normal-flow content (which is z-index: auto) but above the page
+	   background. A positioned z-index: 0 canvas would paint OVER static content
+	   like section text, so it must be negative. Custom cursor (z-index: 10000)
+	   and everything else still sit on top. */
+	z-index: -1;
+	pointer-events: none;
+}
