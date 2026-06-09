@@ -28,8 +28,8 @@
 
 .cardSlot {
 	display: flex;
-	flex: 0 0 clamp(440px, 45vw, 720px);
-	width: clamp(440px, 45vw, 720px);
+	flex: 0 0 clamp(27.5rem, 45vw, 45rem);
+	width: clamp(27.5rem, 45vw, 45rem);
 }
 
 .edgeHint {
