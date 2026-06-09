@@ -56,11 +56,11 @@ app/page.tsx
 
 | File | Change | Responsibility |
 |---|---|---|
-| `components/DotGrid/canRender.ts` | create | `export function dotGridSupported(): boolean` — `matchMedia("(pointer: fine)")` AND NOT `matchMedia("(prefers-reduced-motion: reduce)")`. Single source for the render gate. |
+| `components/DotGrid/canRender.ts` | create | `export function dotGridSupported(): boolean` — returns NOT `matchMedia("(hover: none) and (pointer: coarse)")`, i.e. the same touch-only gate the canvas already uses to bail out (and that hides the custom cursor in `app/page.module.css`). Single source for the render gate. **Note:** the canvas does NOT disable under reduced-motion — it keeps the full blob and only zeroes `push` — so reduced-motion must NOT gate the controls either. |
 | `components/DotGrid/DotControls.tsx` | create | Client component: floating button + anchored popover, slider state, store writes, open/close + Esc + click-outside. |
 | `components/DotGrid/DotControls.module.css` | create | Button (mirrors `.themeToggle`), glass popover, slider styling, `cursor: none`. |
 | `components/DotGrid/dotGridStore.ts` | (no API change) | Already exposes `subscribe`; used for the spacing rebuild. Update the `TODO(dotgrid-easter-egg)` anchor to reflect that the panel now exists. |
-| `components/DotGrid/DotGrid.tsx` | modify | Use `dotGridSupported()` for its guard; `subscribe()` to the store and rebuild the grid when `spacing` changes. |
+| `components/DotGrid/DotGrid.tsx` | modify | Replace its inline touch-only `matchMedia` check with `dotGridSupported()` (reduced-motion handling stays as-is); `subscribe()` to the store and rebuild the grid when `spacing` changes. |
 | `app/page.tsx` | modify | Import and render `<DotControls />` alongside `<DotGrid />`. |
 
 ## The button
@@ -73,8 +73,10 @@ Visually a twin of the theme toggle, anchored to the opposite vertical corner:
 - Icon: `HiOutlineAdjustmentsHorizontal` from `react-icons/hi2` (reads as "tune"). Icon sized
   like the toggle's `1.5rem` svg (and the responsive `1.25rem` at the existing breakpoints).
 - `aria-label="Customize background"`; `aria-expanded` reflects open state.
-- **Rendered only when `dotGridSupported()` is true.** On touch / reduced-motion the canvas
-  doesn't run, so neither button nor panel appear.
+- **Rendered only when `dotGridSupported()` is true.** On touch-only devices the canvas
+  doesn't run, so neither button nor panel appear. Under reduced-motion the canvas *does* run
+  (with `push` zeroed), so the button and panel still appear and tuning still works — none of
+  the six surfaced sliders is `push`.
 - Responsive: at the same breakpoints where `.themeToggle` shrinks (`top/right` → `1.25rem/1.5rem`,
   size → `2.5rem`), the button mirrors with `bottom: 1.25rem; right: 1.5rem; size 2.5rem`.
 
@@ -128,8 +130,9 @@ subscription.
   `mousemove` handler already detects them as clickable and swaps to the pointer/fist hand.
   Panel elements set `cursor: none` so the OS cursor stays hidden, consistent with the rest of
   the site. Dragging a slider shows the custom fist on mousedown — acceptable and on-brand.
-- **Reduced-motion / touch:** `dotGridSupported()` is false → the component renders nothing
-  (returns `null` after the mount-time media check). No console errors.
+- **Touch-only devices:** `dotGridSupported()` is false → the component renders nothing
+  (returns `null` after the mount-time media check). No console errors. **Reduced-motion is not
+  a gate** — the canvas still runs, so the controls still render and tune it.
 - **Reset:** returns every param — including the ones not surfaced as sliders — to `DEFAULTS`.
 - **Live sync with console bridge:** out of scope to two-way bind; the panel seeds from
   `getParams()` on mount. If a visitor later uses the dev console, the sliders may show stale
@@ -151,8 +154,10 @@ No test runner in the repo (matches the dot-grid plan's stance). Gates:
   - Each slider live-updates the effect; Spacing visibly re-lays the grid without a resize.
   - Reset restores the default look.
   - Esc and click-outside close the panel.
-  - Emulate `prefers-reduced-motion: reduce` and a coarse-pointer device: button/panel absent,
-    no console errors.
+  - Emulate a coarse-pointer / touch-only device (`(hover: none) and (pointer: coarse)`):
+    button/panel absent, no console errors.
+  - Emulate `prefers-reduced-motion: reduce`: button/panel still present and sliders still
+    tune the (push-disabled) effect.
   - Custom hand cursor still renders over the button and sliders.
 
 ## Deferred / future work
