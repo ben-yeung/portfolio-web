@@ -259,7 +259,9 @@ body.light .customCursor {
 	}
 
 	.themeToggle {
-		top: 1.25rem;
+		/* Mobile only: move the switcher to the bottom-right, same 1.5rem horizontal inset. */
+		top: auto;
+		bottom: 1.5rem;
 		right: 1.5rem;
 		width: 2.5rem;
 		height: 2.5rem;
@@ -457,7 +459,9 @@ body.light .customCursor {
 	}
 
 	.themeToggle {
-		top: 1.25rem;
+		/* Mobile only: move the switcher to the bottom-right, same 1.5rem horizontal inset. */
+		top: auto;
+		bottom: 1.5rem;
 		right: 1.5rem;
 		width: 2.5rem;
 		height: 2.5rem;
@@ -501,7 +505,14 @@ body.light .customCursor {
 	}
 
 	.projectsSection {
-		padding: 3rem 2rem;
+		/* No horizontal padding on mobile so the carousel reaches the screen edge.
+		   Top-align and size to the content (drop the 100vh floor) so there's no large
+		   empty area above or below the carousel. scroll-margin-top offsets the #projects
+		   anchor for the fixed navbar instead of using a large top padding. */
+		min-height: auto;
+		padding: 1.5rem 0 3rem;
+		scroll-margin-top: 4.5rem;
+		align-items: flex-start;
 	}
 
 	.projectsContainer {
@@ -509,8 +520,7 @@ body.light .customCursor {
 	}
 
 	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
+		display: none;
 	}
 
 	.projectLinkIcon {
@@ -558,17 +568,11 @@ body.light .customCursor {
 	}
 
 	.projectsSection {
-		padding: 2rem 1.5rem;
+		padding: 1.5rem 0 2rem;
 	}
 
 	.projectsContainer {
 		gap: 2rem;
-	}
-
-	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.25rem;
-		margin-top: 1.5rem;
 	}
 
 	.projectContent {

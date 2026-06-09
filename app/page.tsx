@@ -12,6 +12,9 @@ import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
 import DotControls from "@/components/DotGrid/DotControls";
+import { projects } from "@/data/projects";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import ProjectsCarousel from "@/components/ProjectsCarousel/ProjectsCarousel";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -22,67 +25,9 @@ const messagePlaceholders = ["Your next big idea...", "Your follow-up question..
 
 const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
 
-const projects = [
-	{
-		id: 0,
-		title: "/obsidian-buddy",
-		description: "A modular AI assistant plugin for Obsidian with permissioned reads/writes to your vault. Modules evolve through use, powered by OpenRouter.",
-		tech: ["React", "TypeScript", "Obsidian", "OpenRouter"],
-		image: "/assets/obsidian.png",
-		link: "https://github.com/ben-yeung/obsidian-buddy",
-	},
-	{
-		id: 1,
-		title: "/iron-fit-gym",
-		description: "Website for Iron Fit Gym featuring Calendly integration, booking waiver flows, and custom trainer filtering.",
-		tech: ["React", "TypeScript", "Next.js", "EmailJS", "Motion"],
-		image: "/assets/ironfit.png",
-		link: "https://www.ironfittf.com/",
-	},
-	{
-		id: 2,
-		title: "/crumbs-starter-kit",
-		description: "An open-source starter kit for building data visualization on the CRUMBS AWS Athena interface for AIxCC Finals.",
-		tech: ["React", "TypeScript", "Next.js", "Tailwind"],
-		image: "/assets/starter.png",
-		link: "https://aicyberchallenge.com/",
-	},
-	{
-		id: 3,
-		title: "/llm-request-viewer",
-		description: "Interactive LLM request viewer displaying submission events, tasks, and requests using CRUMBS AWS Athena AIxCC Finals telemetry data.",
-		tech: ["React", "TypeScript", "Next.js"],
-		image: "/assets/llm.png",
-		link: "https://aicyberchallenge.com/",
-	},
-	{
-		id: 4,
-		title: "/novusys",
-		description: "A web3 wallet provider built on ERC-4337 using social sign-in and recovery. MV3 Chrome Extension + Launch Landing Site",
-		tech: ["React", "TypeScript", "Next.js", "🥇 Scaling ETH 2023 Finalist", "🥈 Gnosis Chain"],
-		image: "/assets/novusys.png",
-		link: "https://github.com/novusys/novusys",
-	},
-	{
-		id: 5,
-		title: "/novusys-paymaster",
-		description: "A React widget with a custom ERC-4337 paymaster allowing users to pay for entire transactions using Stripe or ERC-20 tokens.",
-		tech: ["React", "TypeScript", "Next.js", "🥇 ETHGlobal Tokyo 2023 Finalist"],
-		image: "/assets/paymaster.png",
-		link: "https://github.com/novusys/novusys-paymaster",
-	},
-	{
-		id: 6,
-		title: "/nft-vision",
-		description: "A Discord bot capable of scraping NFT floor prices based on metadata filters, normalized rankings, and marketplaces.",
-		tech: ["TypeScript", "Python", "DiscordJS", "MongoDB"],
-		image: "/assets/vision2.png",
-		link: "https://github.com/ben-yeung/nft-vision-discord",
-	},
-];
-
 export default function Home() {
 	const [isDark, setIsDark] = useState(true);
+	const isMobile = useMediaQuery("(max-width: 768px)");
 	const [currentTitle, setCurrentTitle] = useState(0);
 	const [displayedText, setDisplayedText] = useState("");
 	const [isTyping, setIsTyping] = useState(true);
@@ -310,33 +255,37 @@ export default function Home() {
 						Projects
 					</motion.h2>
 
-					<div className={styles.projectsGrid}>
-						{projects.map((project, index) => (
-							<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
-								<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
-									<div className={styles.projectImageWrapper}>
-										<img src={project.image} alt={project.title} className={styles.projectImage} />
-										<div className={styles.projectOverlay}>
-											<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
+					{isMobile ? (
+						<ProjectsCarousel projects={projects} />
+					) : (
+						<div className={styles.projectsGrid}>
+							{projects.map((project, index) => (
+								<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
+									<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
+										<div className={styles.projectImageWrapper}>
+											<img src={project.image} alt={project.title} className={styles.projectImage} />
+											<div className={styles.projectOverlay}>
+												<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
+											</div>
 										</div>
-									</div>
 
-									<div className={styles.projectContent}>
-										<h3 className={styles.projectTitle}>{project.title}</h3>
-										<p className={styles.projectDescription}>{project.description}</p>
+										<div className={styles.projectContent}>
+											<h3 className={styles.projectTitle}>{project.title}</h3>
+											<p className={styles.projectDescription}>{project.description}</p>
 
-										<div className={styles.projectTech}>
-											{project.tech.map((tech, techIndex) => (
-												<span key={techIndex} className={styles.techBadge}>
-													{tech}
-												</span>
-											))}
+											<div className={styles.projectTech}>
+												{project.tech.map((tech, techIndex) => (
+													<span key={techIndex} className={styles.techBadge}>
+														{tech}
+													</span>
+												))}
+											</div>
 										</div>
-									</div>
-								</a>
-							</motion.div>
-						))}
-					</div>
+									</a>
+								</motion.div>
+							))}
+						</div>
+					)}
 				</div>
 			</section>
 
