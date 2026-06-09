@@ -123,7 +123,7 @@ body.dark nav {
 	/* layer 1 (padding-box): translucent surface; layer 2 (border-box): gradient-lit edge */
 	background-image:
 		linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
-		linear-gradient(180deg, rgba(160, 158, 164, 0.6), rgba(160, 158, 164, 0.34) 20%, rgba(160, 158, 164, 0.2) 45%, rgba(160, 158, 164, 0.1) 70%, rgba(160, 158, 164, 0.06)) !important;
+		linear-gradient(180deg, rgba(132, 130, 136, 0.6), rgba(132, 130, 136, 0.34) 20%, rgba(132, 130, 136, 0.2) 45%, rgba(132, 130, 136, 0.1) 70%, rgba(132, 130, 136, 0.06)) !important;
 	background-origin: border-box !important;
 	background-clip: padding-box, border-box !important;
 	border: 1px solid transparent !important;
@@ -131,7 +131,7 @@ body.dark nav {
 	backdrop-filter: blur(18px) saturate(170%);
 	box-shadow:
 		0 8px 32px rgba(0, 0, 0, 0.32),
-		inset 0 1px 0 rgba(160, 158, 164, 0.35),
+		inset 0 1px 0 rgba(132, 130, 136, 0.35),
 		inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -154,7 +154,7 @@ body.light nav {
 	body.dark nav {
 		background-image:
 			linear-gradient(180deg, rgba(40, 40, 45, 0.92), rgba(30, 30, 34, 0.92)),
-			linear-gradient(180deg, rgba(160, 158, 164, 0.6), rgba(160, 158, 164, 0.34) 20%, rgba(160, 158, 164, 0.2) 45%, rgba(160, 158, 164, 0.1) 70%, rgba(160, 158, 164, 0.06)) !important;
+			linear-gradient(180deg, rgba(132, 130, 136, 0.6), rgba(132, 130, 136, 0.34) 20%, rgba(132, 130, 136, 0.2) 45%, rgba(132, 130, 136, 0.1) 70%, rgba(132, 130, 136, 0.06)) !important;
 	}
 	body.light nav {
 		background-image:
