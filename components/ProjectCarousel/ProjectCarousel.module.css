@@ -1,0 +1,61 @@
+.carousel {
+	display: none;
+	width: 100%;
+	margin-top: 2rem;
+}
+
+/* Carousel is desktop-only; below this the page renders the stacked grid. */
+@media (min-width: 1025px) {
+	.carousel {
+		display: block;
+	}
+}
+
+.row {
+	position: relative;
+	overflow: hidden;
+	padding: 0.85rem 0;
+	-webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+	mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.track {
+	display: flex;
+	gap: 1.75rem;
+	width: max-content;
+	will-change: transform;
+}
+
+.cardSlot {
+	display: flex;
+	flex: 0 0 clamp(440px, 45vw, 720px);
+	width: clamp(440px, 45vw, 720px);
+}
+
+.edgeHint {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 18%;
+	display: flex;
+	align-items: center;
+	font-size: 2.2rem;
+	color: var(--text-primary);
+	pointer-events: none;
+	opacity: 0;
+	z-index: 5;
+}
+
+.edgeHintLeft {
+	left: 0;
+	justify-content: flex-start;
+	padding-left: 1.2rem;
+	background: linear-gradient(90deg, rgba(135, 117, 100, 0.18), transparent);
+}
+
+.edgeHintRight {
+	right: 0;
+	justify-content: flex-end;
+	padding-right: 1.2rem;
+	background: linear-gradient(270deg, rgba(135, 117, 100, 0.18), transparent);
+}

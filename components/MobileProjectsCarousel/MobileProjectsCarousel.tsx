@@ -5,7 +5,7 @@ import { animate, motion, useMotionValue, type PanInfo } from "framer-motion";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import type { Project } from "@/data/projects";
 import { wrapIndex } from "./wrapIndex";
-import styles from "./ProjectsCarousel.module.css";
+import styles from "./MobileProjectsCarousel.module.css";
 
 const AUTOPLAY_MS = 5000; // advance cadence when idle
 const RESUME_MS = 8000; // stillness required before autoplay resumes
@@ -13,7 +13,7 @@ const SWIPE_DISTANCE = 60; // px of horizontal drag that commits a slide
 const SWIPE_VELOCITY = 400; // px/s flick that commits a slide
 const COPIES = 3; // render the list three times so the track always has neighbours preloaded
 
-export default function ProjectsCarousel({ projects }: { projects: Project[] }) {
+export default function MobileProjectsCarousel({ projects }: { projects: Project[] }) {
 	const n = projects.length;
 
 	const viewportRef = useRef<HTMLDivElement>(null);
