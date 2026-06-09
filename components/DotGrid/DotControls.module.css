@@ -91,7 +91,7 @@
 
 .slider {
 	width: 100%;
-	accent-color: var(--accent-color);
+	accent-color: var(--input-focus-border);
 	cursor: none;
 }
 
