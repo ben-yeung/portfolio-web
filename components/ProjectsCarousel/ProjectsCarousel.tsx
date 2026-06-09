@@ -54,17 +54,20 @@ export default function ProjectsCarousel({ projects }: { projects: Project[] }) 
 	};
 
 	const startAutoplay = () => {
-		if (reduceMotionRef.current || intervalRef.current) return;
+		if (reduceMotionRef.current || intervalRef.current || document.hidden) return;
 		intervalRef.current = setInterval(() => {
 			setActiveIndex((i) => wrapIndex(i + 1, n));
 		}, AUTOPLAY_MS);
 	};
 
 	// Manual interaction wins: stop now, resume only after RESUME_MS of stillness.
+	// Under reduced motion there is nothing to resume, so don't arm the timer.
 	const pauseAutoplay = () => {
 		stopAutoplay();
 		if (resumeRef.current) clearTimeout(resumeRef.current);
-		resumeRef.current = setTimeout(startAutoplay, RESUME_MS);
+		if (!reduceMotionRef.current) {
+			resumeRef.current = setTimeout(startAutoplay, RESUME_MS);
+		}
 	};
 
 	useEffect(() => {

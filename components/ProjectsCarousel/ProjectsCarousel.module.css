@@ -160,7 +160,7 @@
 	border-radius: 50%;
 	background: var(--text-primary);
 	opacity: 0.25;
-	transition: all 0.3s ease;
+	transition: opacity 0.3s ease, width 0.3s ease, border-radius 0.3s ease;
 }
 
 .dotActive {
