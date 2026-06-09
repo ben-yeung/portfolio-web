@@ -12,6 +12,8 @@ import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
 import { projects } from "@/data/projects";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import ProjectsCarousel from "@/components/ProjectsCarousel/ProjectsCarousel";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -24,6 +26,7 @@ const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast."
 
 export default function Home() {
 	const [isDark, setIsDark] = useState(true);
+	const isMobile = useMediaQuery("(max-width: 768px)");
 	const [currentTitle, setCurrentTitle] = useState(0);
 	const [displayedText, setDisplayedText] = useState("");
 	const [isTyping, setIsTyping] = useState(true);
@@ -250,33 +253,37 @@ export default function Home() {
 						Projects
 					</motion.h2>
 
-					<div className={styles.projectsGrid}>
-						{projects.map((project, index) => (
-							<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
-								<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
-									<div className={styles.projectImageWrapper}>
-										<img src={project.image} alt={project.title} className={styles.projectImage} />
-										<div className={styles.projectOverlay}>
-											<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
+					{isMobile ? (
+						<ProjectsCarousel projects={projects} />
+					) : (
+						<div className={styles.projectsGrid}>
+							{projects.map((project, index) => (
+								<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
+									<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
+										<div className={styles.projectImageWrapper}>
+											<img src={project.image} alt={project.title} className={styles.projectImage} />
+											<div className={styles.projectOverlay}>
+												<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
+											</div>
 										</div>
-									</div>
 
-									<div className={styles.projectContent}>
-										<h3 className={styles.projectTitle}>{project.title}</h3>
-										<p className={styles.projectDescription}>{project.description}</p>
+										<div className={styles.projectContent}>
+											<h3 className={styles.projectTitle}>{project.title}</h3>
+											<p className={styles.projectDescription}>{project.description}</p>
 
-										<div className={styles.projectTech}>
-											{project.tech.map((tech, techIndex) => (
-												<span key={techIndex} className={styles.techBadge}>
-													{tech}
-												</span>
-											))}
+											<div className={styles.projectTech}>
+												{project.tech.map((tech, techIndex) => (
+													<span key={techIndex} className={styles.techBadge}>
+														{tech}
+													</span>
+												))}
+											</div>
 										</div>
-									</div>
-								</a>
-							</motion.div>
-						))}
-					</div>
+									</a>
+								</motion.div>
+							))}
+						</div>
+					)}
 				</div>
 			</section>
 

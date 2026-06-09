@@ -519,8 +519,7 @@ body.light .customCursor {
 	}
 
 	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
+		display: none;
 	}
 
 	.projectLinkIcon {
@@ -573,12 +572,6 @@ body.light .customCursor {
 
 	.projectsContainer {
 		gap: 2rem;
-	}
-
-	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.25rem;
-		margin-top: 1.5rem;
 	}
 
 	.projectContent {
