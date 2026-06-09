@@ -259,7 +259,9 @@ body.light .customCursor {
 	}
 
 	.themeToggle {
-		top: 1.25rem;
+		/* Mobile only: move the switcher to the bottom-right, same 1.5rem horizontal inset. */
+		top: auto;
+		bottom: 1.5rem;
 		right: 1.5rem;
 		width: 2.5rem;
 		height: 2.5rem;
@@ -329,25 +331,20 @@ body.light .customCursor {
 	text-align: center;
 }
 
-.projectsGrid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 1.5rem;
-	width: 100%;
-	margin-top: 2rem;
-}
-
-
+/* Tablets and below: the desktop two-row carousel collapses, so the single-column swipe
+   carousel (MobileProjectsCarousel) takes over. Let it reach the screen edge and size the
+   section to its content — no horizontal padding, no 100vh floor — with scroll-margin-top
+   offsetting the #projects anchor for the fixed navbar. */
 @media (max-width: 1024px) {
-	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
+	.projectsSection {
+		min-height: auto;
+		padding: 1.5rem 0 3rem;
+		scroll-margin-top: 4.5rem;
+		align-items: flex-start;
 	}
-}
 
-@media (min-width: 1025px) {
-	.projectsGrid {
-		display: none;
+	.projectsContainer {
+		gap: 0;
 	}
 }
 
@@ -357,7 +354,9 @@ body.light .customCursor {
 	}
 
 	.themeToggle {
-		top: 1.25rem;
+		/* Mobile only: move the switcher to the bottom-right, same 1.5rem horizontal inset. */
+		top: auto;
+		bottom: 1.5rem;
 		right: 1.5rem;
 		width: 2.5rem;
 		height: 2.5rem;
@@ -400,18 +399,6 @@ body.light .customCursor {
 		height: 1.75rem;
 	}
 
-	.projectsSection {
-		padding: 3rem 2rem;
-	}
-
-	.projectsContainer {
-		gap: 0;
-	}
-
-	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
-	}
 }
 
 @media (max-width: 480px) {
@@ -453,17 +440,11 @@ body.light .customCursor {
 	}
 
 	.projectsSection {
-		padding: 2rem 1.5rem;
+		padding: 1.5rem 0 2rem;
 	}
 
 	.projectsContainer {
 		gap: 2rem;
-	}
-
-	.projectsGrid {
-		grid-template-columns: 1fr;
-		gap: 1.25rem;
-		margin-top: 1.5rem;
 	}
 }
 
