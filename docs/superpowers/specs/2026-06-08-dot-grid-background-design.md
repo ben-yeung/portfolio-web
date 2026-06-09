@@ -116,9 +116,13 @@ singleton, framework-agnostic, zero re-render cost.
 
 **`app/page.module.css`**
 - Remove the `.mouseHighlight` rule.
-- Add `.dotCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0;
-  pointer-events: none; }` (the canvas sits where the glow was, behind content; the custom
-  cursor stays at `z-index: 10000`).
+- Define `.dotCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1;
+  pointer-events: none; }`. Lives in a co-located `components/DotGrid/DotGrid.module.css`
+  (matching the Footer/Navbar pattern), not `page.module.css`. **z-index must be negative,
+  not 0:** a positioned `z-index: 0` canvas paints OVER static normal-flow content (section
+  text), which the old faint-gradient glow masked but the opaque dots expose. `-1` keeps the
+  canvas above the page background yet behind all content; the custom cursor stays at
+  `z-index: 10000`.
 
 ## Data Flow
 
@@ -149,10 +153,16 @@ too faint on the `#f5ebe1` background.
 ## Performance & Edge Cases
 
 - **DPR capped at 2**; the dot grid is rebuilt on `resize`.
-- **`prefers-reduced-motion: reduce`** → effect disabled: no rAF loop, canvas renders
-  nothing.
-- **No fine pointer** (`(pointer: fine)` fails — touch devices) → effect disabled, matching
-  how the custom cursor is already disabled on mobile.
+- **`prefers-reduced-motion: reduce`** → **calm variant** (decided 2026-06-08 after testing:
+  fully disabling left the effect invisible to the many users who run reduced-motion). The
+  effect keeps the full fluid blob, irregular edge, and trailing wake; the only thing
+  disabled is the per-dot displacement (`push` → 0), so dots reveal in place rather than
+  flying away from the cursor. Full displacement is reserved for users without the
+  preference.
+- **Touch-only devices** (`(hover: none) and (pointer: coarse)`) → effect disabled. This is
+  the exact media query that hides the custom cursor in `app/page.module.css`; the earlier
+  `(pointer: fine)` check was stricter and wrongly disabled the effect on touch-capable
+  desktops, so it was corrected to match.
 - **Tab hidden** (`visibilitychange`) → pause the rAF loop; resume on visible.
 - Pointer math uses `hypot`/`atan2` per dot per follower (~3,600 dots × 6 at 1080p) — well
   within 60fps budget on Canvas 2D; no offscreen/worker rendering needed.
