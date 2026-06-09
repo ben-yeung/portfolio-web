@@ -61,10 +61,15 @@
 .resetButton {
 	background: transparent;
 	border: none;
-	color: var(--accent-color);
+	color: var(--input-focus-border);
 	font-size: 0.7rem;
 	cursor: none;
 	padding: 0;
+}
+
+/* Light mode: same blue-grey accent, lightened for the warm light surface. */
+body.light .resetButton {
+	color: color-mix(in srgb, var(--input-focus-border) 58%, #ffffff);
 }
 
 .resetButton:hover {
@@ -95,22 +100,11 @@
 	cursor: none;
 }
 
-/* Mirror the theme toggle's responsive shrink (app/page.module.css @media max-width:768px). */
+/* Hide the customization affordance at mobile widths: the DotGrid is a hover-driven
+   desktop effect, so there's nothing to tune on a small/touch screen. */
 @media (max-width: 768px) {
-	.controlsToggle {
-		bottom: 1.25rem;
-		right: 1.5rem;
-		width: 2.5rem;
-		height: 2.5rem;
-	}
-
-	.controlsToggle svg {
-		width: 1.25rem;
-		height: 1.25rem;
-	}
-
+	.controlsToggle,
 	.panel {
-		right: 1.5rem;
-		bottom: 4.5rem;
+		display: none;
 	}
 }
