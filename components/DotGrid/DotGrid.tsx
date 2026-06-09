@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import styles from "./DotGrid.module.css";
 import { getParams, setParams, subscribe } from "./dotGridStore";
 import { dotGridSupported } from "./canRender";
+import { AutoState, createAutoState, bounceStep } from "./autoPointer";
 
 interface Follower {
 	x: number;
@@ -17,6 +18,7 @@ interface Dot {
 
 const FOLLOWER_COUNT = 6;
 const HEAD_EASE = 0.35; // how fast the head follower tracks the pointer
+const TOUCH_EASE = 0.18; // how fast the virtual pointer slides toward an active touch
 const DOT_BASE_RADIUS = 1.1; // px, before growth
 const MAX_DPR = 2;
 
@@ -39,10 +41,15 @@ export default function DotGrid() {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		// Disable entirely only on true touch-only devices — shared with DotControls via
-		// dotGridSupported(). Under reduced-motion we do NOT disable; frame() keeps the full
-		// fluid blob + wake but turns off the dot displacement (push) so nothing flies around.
-		if (!dotGridSupported()) return;
+		// The effect now ALWAYS runs. dotGridSupported() no longer disables it — it only picks
+		// the default pointer SOURCE: touch-only devices have no mouse, so they start in
+		// autonomous "auto" mode; mouse devices start in "pointer" mode and only fall back to
+		// auto on blur / mouse-leave. This is a device-capability test, NOT a width breakpoint —
+		// a desktop window resized to phone size keeps full mouse behavior. Do not swap it for a
+		// width media query. Under reduced-motion we keep the fluid blob + wake but disable the
+		// dot displacement (push) AND the autonomous bounce — the blob then only moves to follow
+		// a real pointer / touch.
+		const touchOnly = !dotGridSupported();
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
@@ -50,6 +57,13 @@ export default function DotGrid() {
 		let lastSpacing = 0; // owned by buildGrid(); the spacing-rebuild subscriber reads it
 		const followers: Follower[] = Array.from({ length: FOLLOWER_COUNT }, () => ({ x: -9999, y: -9999 }));
 		const mouse = { x: -9999, y: -9999 };
+
+		// Pointer-source state. `mode` selects what drives `mouse` each frame; `auto` is the
+		// virtual pointer integrated by the bounce motion; touch* tracks an active finger.
+		let mode: "pointer" | "auto" = touchOnly ? "auto" : "pointer";
+		let auto: AutoState = createAutoState(window.innerWidth / 2, window.innerHeight / 2);
+		let touchActive = false;
+		const touchPoint = { x: 0, y: 0 };
 
 		const buildGrid = () => {
 			dots = [];
@@ -71,13 +85,35 @@ export default function DotGrid() {
 			buildGrid();
 		};
 
+		// --- Pointer-source event handlers -------------------------------------------------
 		const onMouseMove = (e: MouseEvent) => {
 			mouse.x = e.clientX;
 			mouse.y = e.clientY;
+			mode = "pointer"; // a real mouse reclaims control from the autonomous blob
 		};
-		const onMouseLeave = () => {
-			mouse.x = -9999;
-			mouse.y = -9999;
+		// Desktop: when focus/pointer leaves, hand off to the autonomous blob, seeded at the
+		// blob's CURRENT position so it continues smoothly instead of teleporting.
+		const enterAuto = () => {
+			if (touchOnly || mode === "auto") return;
+			const lastX = followers[0].x < -9000 ? window.innerWidth / 2 : followers[0].x;
+			const lastY = followers[0].y < -9000 ? window.innerHeight / 2 : followers[0].y;
+			auto = createAutoState(lastX, lastY);
+			mode = "auto";
+		};
+		const onMouseLeave = () => enterAuto();
+		const onBlur = () => enterAuto();
+		// Mobile: read touch coordinates only (passive, never preventDefault) so scrolling and
+		// taps are unaffected. While a finger is down the blob eases toward it; on release it
+		// resumes its autonomous bounce.
+		const onTouch = (e: TouchEvent) => {
+			const tch = e.touches[0];
+			if (!tch) return;
+			touchActive = true;
+			touchPoint.x = tch.clientX;
+			touchPoint.y = tch.clientY;
+		};
+		const onTouchEnd = () => {
+			touchActive = false;
 		};
 
 		let rafId = 0;
@@ -89,6 +125,21 @@ export default function DotGrid() {
 			const [cr, cg, cb] = isDark ? p.colorDark : p.colorLight;
 
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			// Resolve the active pointer source into `mouse` (the head target). In "pointer"
+			// mode `mouse` is already maintained by onMouseMove, so nothing to do here.
+			if (mode === "auto") {
+				if (touchActive) {
+					// Follow the finger.
+					auto.x += (touchPoint.x - auto.x) * TOUCH_EASE;
+					auto.y += (touchPoint.y - auto.y) * TOUCH_EASE;
+				} else if (!reduceMotion) {
+					// Autonomous slow bounce. (reduced-motion + no touch => hold last position.)
+					bounceStep(auto, window.innerWidth, window.innerHeight);
+				}
+				mouse.x = auto.x;
+				mouse.y = auto.y;
+			}
 
 			// Initialize the follower chain to the pointer on first real frame.
 			if (followers[0].x < -9000) {
@@ -181,8 +232,19 @@ export default function DotGrid() {
 		};
 
 		resize();
-		window.addEventListener("mousemove", onMouseMove);
-		document.documentElement.addEventListener("mouseleave", onMouseLeave);
+		// Touch-only devices get passive touch listeners; mouse devices get the pointer +
+		// blur/leave handoff listeners. Splitting by device keeps each platform's input model
+		// clean and avoids attaching mouse handlers on phones (and vice versa).
+		if (touchOnly) {
+			window.addEventListener("touchstart", onTouch, { passive: true });
+			window.addEventListener("touchmove", onTouch, { passive: true });
+			window.addEventListener("touchend", onTouchEnd, { passive: true });
+			window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+		} else {
+			window.addEventListener("mousemove", onMouseMove);
+			document.documentElement.addEventListener("mouseleave", onMouseLeave);
+			window.addEventListener("blur", onBlur);
+		}
 		window.addEventListener("resize", resize);
 		document.addEventListener("visibilitychange", onVisibility);
 		start();
@@ -204,8 +266,16 @@ export default function DotGrid() {
 		return () => {
 			stop();
 			unsubscribe();
-			window.removeEventListener("mousemove", onMouseMove);
-			document.documentElement.removeEventListener("mouseleave", onMouseLeave);
+			if (touchOnly) {
+				window.removeEventListener("touchstart", onTouch);
+				window.removeEventListener("touchmove", onTouch);
+				window.removeEventListener("touchend", onTouchEnd);
+				window.removeEventListener("touchcancel", onTouchEnd);
+			} else {
+				window.removeEventListener("mousemove", onMouseMove);
+				document.documentElement.removeEventListener("mouseleave", onMouseLeave);
+				window.removeEventListener("blur", onBlur);
+			}
 			window.removeEventListener("resize", resize);
 			document.removeEventListener("visibilitychange", onVisibility);
 			if (process.env.NODE_ENV !== "production") {
