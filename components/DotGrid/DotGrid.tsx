@@ -18,7 +18,7 @@ interface Dot {
 
 const FOLLOWER_COUNT = 6;
 const HEAD_EASE = 0.35; // how fast the head follower tracks the pointer
-const TOUCH_EASE = 0.08; // how fast the virtual pointer slides toward an active touch (low = smooth, gradual)
+const TOUCH_EASE = 0.055; // how fast the virtual pointer slides toward an active touch (low = smooth, gradual)
 const DOT_BASE_RADIUS = 1.1; // px, before growth
 const MAX_DPR = 2;
 
