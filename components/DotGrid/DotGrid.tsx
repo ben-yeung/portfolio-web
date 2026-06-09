@@ -1,0 +1,197 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import styles from "./DotGrid.module.css";
+import { getParams, setParams } from "./dotGridStore";
+
+interface Follower {
+	x: number;
+	y: number;
+}
+interface Dot {
+	x: number;
+	y: number;
+	a: number; // current eased opacity
+}
+
+const FOLLOWER_COUNT = 6;
+const HEAD_EASE = 0.35; // how fast the head follower tracks the pointer
+const DOT_BASE_RADIUS = 1.1; // px, before growth
+const MAX_DPR = 2;
+
+function smoothstep(t: number): number {
+	return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+}
+
+// Cheap angular pseudo-noise (sum of sines) that evolves over time, giving the
+// blob an irregular, wobbling, organic edge instead of a clean circle.
+function edgeNoise(angle: number, t: number): number {
+	return Math.sin(angle * 3 + t) * 0.5 + Math.sin(angle * 5 - t * 1.3 + 1.7) * 0.3 + Math.sin(angle * 2 + t * 0.6 + 4.1) * 0.2;
+}
+
+export default function DotGrid() {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+
+		// Disable on reduced-motion and on devices without a fine pointer (touch),
+		// matching how the custom cursor is already disabled on mobile.
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const finePointer = window.matchMedia("(pointer: fine)").matches;
+		if (reduceMotion || !finePointer) return;
+
+		const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+		let dots: Dot[] = [];
+		const followers: Follower[] = Array.from({ length: FOLLOWER_COUNT }, () => ({ x: -9999, y: -9999 }));
+		const mouse = { x: -9999, y: -9999 };
+
+		const buildGrid = () => {
+			dots = [];
+			const { spacing } = getParams();
+			for (let y = spacing * 0.5; y < window.innerHeight; y += spacing) {
+				for (let x = spacing * 0.5; x < window.innerWidth; x += spacing) {
+					dots.push({ x, y, a: 0 });
+				}
+			}
+		};
+
+		const resize = () => {
+			canvas.width = Math.floor(window.innerWidth * dpr);
+			canvas.height = Math.floor(window.innerHeight * dpr);
+			canvas.style.width = `${window.innerWidth}px`;
+			canvas.style.height = `${window.innerHeight}px`;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			buildGrid();
+		};
+
+		const onMouseMove = (e: MouseEvent) => {
+			mouse.x = e.clientX;
+			mouse.y = e.clientY;
+		};
+		const onMouseLeave = () => {
+			mouse.x = -9999;
+			mouse.y = -9999;
+		};
+
+		let rafId = 0;
+
+		const frame = (ts: number) => {
+			const t = ts * 0.001;
+			const p = getParams();
+			const isDark = document.body.classList.contains("dark");
+			const [cr, cg, cb] = isDark ? p.colorDark : p.colorLight;
+
+			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			// Initialize the follower chain to the pointer on first real frame.
+			if (followers[0].x < -9000) {
+				for (const f of followers) {
+					f.x = mouse.x;
+					f.y = mouse.y;
+				}
+			}
+			// Head tracks the pointer; each tail follower trails the previous one.
+			// Higher wake => smaller tailEase => longer streak when moving fast.
+			followers[0].x += (mouse.x - followers[0].x) * HEAD_EASE;
+			followers[0].y += (mouse.y - followers[0].y) * HEAD_EASE;
+			const tailEase = 0.55 - p.wake * 0.42;
+			for (let i = 1; i < FOLLOWER_COUNT; i++) {
+				followers[i].x += (followers[i - 1].x - followers[i].x) * tailEase;
+				followers[i].y += (followers[i - 1].y - followers[i].y) * tailEase;
+			}
+
+			const R = p.radius;
+			const head = followers[0];
+			const tailFloor = 1 - p.falloff * 0.9;
+
+			for (const d of dots) {
+				// Soft union over followers: reveal = 1 - prod(1 - f_i).
+				let inv = 1;
+				for (let i = 0; i < FOLLOWER_COUNT; i++) {
+					const f = followers[i];
+					const dx = d.x - f.x;
+					const dy = d.y - f.y;
+					const dist = Math.hypot(dx, dy);
+					const angle = Math.atan2(dy, dx);
+					// Taper radius down the tail so the wake forms a teardrop;
+					// modulate by angular noise for the irregular edge.
+					const ri = R * (1 - 0.1 * i) * (1 + p.edgeNoise * edgeNoise(angle, t));
+					if (dist < ri) {
+						inv *= 1 - smoothstep(1 - dist / ri);
+					}
+				}
+				const reveal = 1 - inv;
+
+				// Topographic brightness: peak under the cursor head, dim outward.
+				const distHead = Math.hypot(d.x - head.x, d.y - head.y);
+				const headProx = smoothstep(1 - distHead / R);
+				const target = Math.max(p.baseOpacity, reveal * (tailFloor + (1 - tailFloor) * headProx));
+
+				let ox = 0;
+				let oy = 0;
+				let grow = 1;
+				if (target > 0.01) {
+					const dist = distHead || 0.0001;
+					const force = p.push * (reveal > p.baseOpacity ? reveal : 0);
+					ox = ((d.x - head.x) / dist) * force;
+					oy = ((d.y - head.y) / dist) * force;
+					grow = 1 + (p.grow - 1) * target;
+				}
+
+				// Ease toward target for the trailing fade.
+				d.a += (target - d.a) * p.fade;
+				if (d.a < 0.002) continue;
+
+				ctx.beginPath();
+				ctx.arc(d.x + ox, d.y + oy, DOT_BASE_RADIUS * grow, 0, Math.PI * 2);
+				ctx.fillStyle = `rgba(${cr},${cg},${cb},${d.a})`;
+				ctx.fill();
+			}
+
+			rafId = requestAnimationFrame(frame);
+		};
+
+		const start = () => {
+			if (!rafId) rafId = requestAnimationFrame(frame);
+		};
+		const stop = () => {
+			if (rafId) {
+				cancelAnimationFrame(rafId);
+				rafId = 0;
+			}
+		};
+		const onVisibility = () => {
+			if (document.hidden) stop();
+			else start();
+		};
+
+		resize();
+		window.addEventListener("mousemove", onMouseMove);
+		window.addEventListener("mouseleave", onMouseLeave);
+		window.addEventListener("resize", resize);
+		document.addEventListener("visibilitychange", onVisibility);
+		start();
+
+		// Dev-only console bridge so the live params can be tuned before the
+		// easter-egg panel exists (e.g. `window.dotGrid.setParams({ radius: 120 })`).
+		// TODO(dotgrid-easter-egg): live param reads already flow through getParams();
+		// the panel will call setParams() — anchor: components/DotGrid/dotGridStore.ts
+		if (process.env.NODE_ENV !== "production") {
+			(window as unknown as { dotGrid?: unknown }).dotGrid = { getParams, setParams };
+		}
+
+		return () => {
+			stop();
+			window.removeEventListener("mousemove", onMouseMove);
+			window.removeEventListener("mouseleave", onMouseLeave);
+			window.removeEventListener("resize", resize);
+			document.removeEventListener("visibilitychange", onVisibility);
+		};
+	}, []);
+
+	return <canvas ref={canvasRef} className={styles.dotCanvas} aria-hidden="true" />;
+}
