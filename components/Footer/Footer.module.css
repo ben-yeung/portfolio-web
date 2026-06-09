@@ -41,8 +41,8 @@
 
 /* tft.png tinted to the theme color via mask (white in dark, dark in light) */
 .tftIcon {
-	width: 1em;
-	height: 1em;
+	width: 1.2em;
+	height: 1.2em;
 	background-color: var(--text-primary);
 	-webkit-mask: url(/assets/tft.png) center / contain no-repeat;
 	mask: url(/assets/tft.png) center / contain no-repeat;
