@@ -116,6 +116,10 @@ export default function DotGrid() {
 					const dx = d.x - f.x;
 					const dy = d.y - f.y;
 					const dist = Math.hypot(dx, dy);
+					// Cheap bound: the largest possible ri is R * ~1.36 (head follower,
+					// edge noise at +amplitude). Skip atan2/edgeNoise for dots that
+					// cannot be inside this follower's blob.
+					if (dist >= R * 1.5) continue;
 					const angle = Math.atan2(dy, dx);
 					// Taper radius down the tail so the wake forms a teardrop;
 					// modulate by angular noise for the irregular edge.
@@ -147,7 +151,7 @@ export default function DotGrid() {
 				if (d.a < 0.002) continue;
 
 				ctx.beginPath();
-				ctx.arc(d.x + ox, d.y + oy, DOT_BASE_RADIUS * grow, 0, Math.PI * 2);
+				ctx.arc(d.x + ox, d.y + oy, Math.max(0, DOT_BASE_RADIUS * grow), 0, Math.PI * 2);
 				ctx.fillStyle = `rgba(${cr},${cg},${cb},${d.a})`;
 				ctx.fill();
 			}
@@ -171,7 +175,7 @@ export default function DotGrid() {
 
 		resize();
 		window.addEventListener("mousemove", onMouseMove);
-		window.addEventListener("mouseleave", onMouseLeave);
+		document.documentElement.addEventListener("mouseleave", onMouseLeave);
 		window.addEventListener("resize", resize);
 		document.addEventListener("visibilitychange", onVisibility);
 		start();
@@ -187,9 +191,12 @@ export default function DotGrid() {
 		return () => {
 			stop();
 			window.removeEventListener("mousemove", onMouseMove);
-			window.removeEventListener("mouseleave", onMouseLeave);
+			document.documentElement.removeEventListener("mouseleave", onMouseLeave);
 			window.removeEventListener("resize", resize);
 			document.removeEventListener("visibilitychange", onVisibility);
+			if (process.env.NODE_ENV !== "production") {
+				delete (window as unknown as { dotGrid?: unknown }).dotGrid;
+			}
 		};
 	}, []);
 
