@@ -31,20 +31,21 @@
 	align-items: center;
 }
 
-.navItem::after {
+.navItem::before {
 	content: "";
 	position: absolute;
-	bottom: 0;
-	left: 50%;
-	width: 0;
-	height: 2px;
-	background-color: rgba(255, 255, 255, 0.45);
-	transform: translateX(-50%);
-	transition: width 0.3s ease;
+	top: 50%;
+	left: 0;
+	right: 0;
+	height: 2.1rem;
+	transform: translateY(-50%);
+	border-radius: 1.05rem;
+	opacity: 0;
+	transition: opacity 0.25s ease;
 }
 
-.navItem:hover::after {
-	width: 80%;
+.navItem:hover::before {
+	opacity: 1;
 }
 
 @media (max-width: 768px) {
