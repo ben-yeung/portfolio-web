@@ -19,6 +19,9 @@ const Footer = () => {
 					<a href="https://github.com/ben-yeung" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="GitHub">
 						<FaGithub />
 					</a>
+					<a href="https://www.metatft.com/player/na/bento-san" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="TFT Profile">
+						<span className={styles.tftIcon} />
+					</a>
 					<a href={data?.isPlaying ? data.songUrl : "https://open.spotify.com/"} target="_blank" rel="noopener noreferrer" className={styles.spotifyWidget} aria-label="Spotify">
 						<div className={styles.spotifyIcon}>
 							<BsSpotify />
