@@ -43,10 +43,6 @@
 	transition: width 0.3s ease;
 }
 
-.navItem:hover {
-	font-family: var(--font-serif), serif;
-}
-
 .navItem:hover::after {
 	width: 80%;
 }
