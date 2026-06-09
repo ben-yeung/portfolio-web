@@ -94,6 +94,8 @@ export default function DotGrid() {
 		// Desktop: when focus/pointer leaves, hand off to the autonomous blob, seeded at the
 		// blob's CURRENT position so it continues smoothly instead of teleporting.
 		const enterAuto = () => {
+			// Mobile is always auto; and once in auto, repeated blur/leave events must NOT
+			// re-seed (else the blob would jump on every focus change) — let it keep bouncing.
 			if (touchOnly || mode === "auto") return;
 			const lastX = followers[0].x < -9000 ? window.innerWidth / 2 : followers[0].x;
 			const lastY = followers[0].y < -9000 ? window.innerHeight / 2 : followers[0].y;
