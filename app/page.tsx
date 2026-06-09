@@ -11,6 +11,7 @@ import styles from "./page.module.css";
 import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
+import DotControls from "@/components/DotGrid/DotControls";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -216,6 +217,7 @@ export default function Home() {
 	return (
 		<div className={styles.container}>
 			<DotGrid />
+			<DotControls />
 			<div
 				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
 				style={{
