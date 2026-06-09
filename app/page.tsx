@@ -12,6 +12,7 @@ import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
 import DotControls from "@/components/DotGrid/DotControls";
 import ProjectCard, { Project } from "@/components/ProjectCard/ProjectCard";
+import ProjectCarousel from "@/components/ProjectCarousel/ProjectCarousel";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -309,6 +310,8 @@ export default function Home() {
 					<motion.h2 className={styles.projectsTitle} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.6 }} transition={{ duration: 0.8 }}>
 						Projects
 					</motion.h2>
+
+					<ProjectCarousel projects={projects} />
 
 					<div className={styles.projectsGrid}>
 						{projects.map((project, index) => (

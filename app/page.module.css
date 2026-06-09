@@ -345,6 +345,12 @@ body.light .customCursor {
 	}
 }
 
+@media (min-width: 1025px) {
+	.projectsGrid {
+		display: none;
+	}
+}
+
 @media (max-width: 768px) {
 	.heroSection {
 		padding: 2rem;
