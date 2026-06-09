@@ -148,3 +148,17 @@ body.light nav {
 		0 8px 30px rgba(0, 0, 0, 0.12),
 		inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
 }
+
+/* No backdrop-filter: fall back to a more opaque surface so text stays legible */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	body.dark nav {
+		background-image:
+			linear-gradient(180deg, rgba(40, 40, 45, 0.92), rgba(30, 30, 34, 0.92)),
+			linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0.05)) !important;
+	}
+	body.light nav {
+		background-image:
+			linear-gradient(180deg, rgba(245, 235, 225, 0.95), rgba(231, 217, 201, 0.95)),
+			linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.15) 45%, rgba(135, 117, 100, 0.25)) !important;
+	}
+}
