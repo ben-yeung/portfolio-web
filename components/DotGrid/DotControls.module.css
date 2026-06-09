@@ -67,8 +67,10 @@
 	padding: 0;
 }
 
-/* Light mode swaps the panel accent from blue-grey to the warm/beige site accent. */
-body.light .resetButton {
+/* Light mode swaps the panel accent from blue-grey to the warm/beige site accent.
+   :global() is required so the loader matches the real `light` class the theme toggle
+   adds to <body>, instead of localizing it to a hashed module class. */
+:global(body.light) .resetButton {
 	color: var(--accent-color);
 }
 
@@ -100,8 +102,9 @@ body.light .resetButton {
 	cursor: none;
 }
 
-/* Light mode swaps the slider accent from blue-grey to the warm/beige site accent. */
-body.light .slider {
+/* Light mode swaps the slider accent from blue-grey to the warm/beige site accent
+   (see the :global() note on .resetButton above). */
+:global(body.light) .slider {
 	accent-color: var(--accent-color);
 }
 
