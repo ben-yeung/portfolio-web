@@ -139,10 +139,10 @@ export default function DotGrid() {
 				let oy = 0;
 				let grow = 1;
 				if (target > 0.01) {
-					const dist = distHead || 0.0001;
+					const headDist = distHead || 0.0001;
 					const force = p.push * (reveal > p.baseOpacity ? reveal : 0);
-					ox = ((d.x - head.x) / dist) * force;
-					oy = ((d.y - head.y) / dist) * force;
+					ox = ((d.x - head.x) / headDist) * force;
+					oy = ((d.y - head.y) / headDist) * force;
 					grow = 1 + (p.grow - 1) * target;
 				}
 
