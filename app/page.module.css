@@ -22,7 +22,12 @@
 	transition:
 		transform 0.18s ease,
 		color 0.2s ease,
-		font-size 0.18s ease;
+		font-size 0.18s ease,
+		opacity 0.25s ease;
+}
+
+.customCursor.cursorHidden {
+	opacity: 0;
 }
 
 .customCursor.cursorHover {

@@ -38,6 +38,9 @@ export default function Home() {
 	const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
 	const [startTypewriter, setStartTypewriter] = useState(false);
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+	// Custom cursor stays hidden until the first real mouse move (kills the top-left snap on
+	// load) and hides again on blur / when the pointer leaves the window (kills the stuck cursor).
+	const [cursorVisible, setCursorVisible] = useState(false);
 	const [isHoveringClickable, setIsHoveringClickable] = useState(false);
 	const [isMouseDown, setIsMouseDown] = useState(false);
 	const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -118,6 +121,7 @@ export default function Home() {
 	useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
 			setMousePosition({ x: e.clientX, y: e.clientY });
+			setCursorVisible(true);
 
 			const target = e.target as HTMLElement;
 			const isClickable = target.tagName === "A" || target.tagName === "BUTTON" || target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.closest("a") || target.closest("button") || target.onclick !== null || target.style.cursor === "pointer";
@@ -126,15 +130,21 @@ export default function Home() {
 
 		const handleMouseDown = () => setIsMouseDown(true);
 		const handleMouseUp = () => setIsMouseDown(false);
+		const handleBlur = () => setCursorVisible(false);
+		const handleDocMouseLeave = () => setCursorVisible(false);
 
 		window.addEventListener("mousemove", handleMouseMove);
 		window.addEventListener("mousedown", handleMouseDown);
 		window.addEventListener("mouseup", handleMouseUp);
+		window.addEventListener("blur", handleBlur);
+		document.documentElement.addEventListener("mouseleave", handleDocMouseLeave);
 
 		return () => {
 			window.removeEventListener("mousemove", handleMouseMove);
 			window.removeEventListener("mousedown", handleMouseDown);
 			window.removeEventListener("mouseup", handleMouseUp);
+			window.removeEventListener("blur", handleBlur);
+			document.documentElement.removeEventListener("mouseleave", handleDocMouseLeave);
 		};
 	}, []);
 
@@ -166,7 +176,7 @@ export default function Home() {
 			<DotGrid />
 			<DotControls />
 			<div
-				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
+				className={`${styles.customCursor} ${cursorVisible ? "" : styles.cursorHidden} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
 				style={{
 					left: `${mousePosition.x}px`,
 					top: `${mousePosition.y}px`,
