@@ -11,6 +11,7 @@ import styles from "./page.module.css";
 import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
+import DotControls from "@/components/DotGrid/DotControls";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -216,6 +217,7 @@ export default function Home() {
 	return (
 		<div className={styles.container}>
 			<DotGrid />
+			<DotControls />
 			<div
 				className={`${styles.customCursor} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
 				style={{
@@ -236,8 +238,8 @@ export default function Home() {
 					<motion.p className={styles.heroGreeting} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}>
 						Hey, I'm
 					</motion.p>
-					<motion.h1 className={styles.heroName} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}>
-						Ben <span className={styles.nameUnder}>Yeung</span>
+					<motion.h1 className={styles.heroName} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}>
+						Ben Yeung
 					</motion.h1>
 					<motion.div className={styles.rotatingTitleContainer} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8, ease: "easeOut" }}>
 						<h2 className={styles.rotatingTitle}>

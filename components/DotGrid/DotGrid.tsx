@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import styles from "./DotGrid.module.css";
-import { getParams, setParams } from "./dotGridStore";
+import { getParams, setParams, subscribe } from "./dotGridStore";
+import { dotGridSupported } from "./canRender";
 
 interface Follower {
 	x: number;
@@ -38,22 +39,22 @@ export default function DotGrid() {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		// Disable entirely only on true touch-only devices — the same media query
-		// that hides the custom cursor (app/page.module.css). Under reduced-motion we
-		// do NOT disable; frame() keeps the full fluid blob + wake but turns off the
-		// dot displacement (push) so nothing flies around.
-		const isTouchOnly = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-		if (isTouchOnly) return;
+		// Disable entirely only on true touch-only devices — shared with DotControls via
+		// dotGridSupported(). Under reduced-motion we do NOT disable; frame() keeps the full
+		// fluid blob + wake but turns off the dot displacement (push) so nothing flies around.
+		if (!dotGridSupported()) return;
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 		let dots: Dot[] = [];
+		let lastSpacing = 0; // owned by buildGrid(); the spacing-rebuild subscriber reads it
 		const followers: Follower[] = Array.from({ length: FOLLOWER_COUNT }, () => ({ x: -9999, y: -9999 }));
 		const mouse = { x: -9999, y: -9999 };
 
 		const buildGrid = () => {
 			dots = [];
 			const { spacing } = getParams();
+			lastSpacing = spacing;
 			for (let y = spacing * 0.5; y < window.innerHeight; y += spacing) {
 				for (let x = spacing * 0.5; x < window.innerWidth; x += spacing) {
 					dots.push({ x, y, a: 0 });
@@ -186,16 +187,23 @@ export default function DotGrid() {
 		document.addEventListener("visibilitychange", onVisibility);
 		start();
 
-		// Dev-only console bridge so the live params can be tuned before the
-		// easter-egg panel exists (e.g. `window.dotGrid.setParams({ radius: 120 })`).
-		// TODO(dotgrid-easter-egg): live param reads already flow through getParams();
-		// the panel will call setParams() — anchor: components/DotGrid/dotGridStore.ts
+		// Live spacing changes (from DotControls) need a grid rebuild; every other param is
+		// read per frame by the draw loop. subscribe() fires on each setParams().
+		const unsubscribe = subscribe(() => {
+			if (getParams().spacing !== lastSpacing) buildGrid();
+		});
+
+		// Dev-only console bridge for tuning the params the DotControls panel doesn't
+		// surface (push / fade / falloff / colors), e.g. window.dotGrid.setParams({ push: 0 }).
+		// TODO(dotgrid-advanced-controls): a panel "advanced" section could replace this —
+		// anchor: components/DotGrid/dotGridStore.ts
 		if (process.env.NODE_ENV !== "production") {
 			(window as unknown as { dotGrid?: unknown }).dotGrid = { getParams, setParams };
 		}
 
 		return () => {
 			stop();
+			unsubscribe();
 			window.removeEventListener("mousemove", onMouseMove);
 			document.documentElement.removeEventListener("mouseleave", onMouseLeave);
 			window.removeEventListener("resize", resize);
