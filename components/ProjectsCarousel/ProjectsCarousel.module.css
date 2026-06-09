@@ -7,16 +7,40 @@
 	gap: 1.25rem;
 }
 
-.stage {
+/* Clips the off-screen previous/next cards; the draggable track slides within it. */
+.viewport {
 	position: relative;
 	width: 100%;
-	display: flex;
-	justify-content: center;
+	overflow: hidden;
 }
 
-/* Shared card surface — mirrors the desktop .projectCard glass treatment. */
+.track {
+	display: flex;
+	/* Equal-height slides so every card matches the tallest. */
+	align-items: stretch;
+	/* Let vertical gestures scroll the page; horizontal is captured by framer drag. */
+	touch-action: pan-y;
+}
+
+.slide {
+	flex: 0 0 auto;
+	/* width is set inline to the measured viewport width (full-width slides) */
+	display: flex;
+	box-sizing: border-box;
+	/* Inset the card within its full-width slide: gives each card a horizontal margin
+	   from the screen edge AND the gap between adjacent cards, while the track itself
+	   stays edge-to-edge so cards still scroll in from the screen edge.
+	   1.5rem matches the theme-toggle button's `right` offset so the card edge lines up. */
+	padding: 0 1.5rem;
+}
+
+/* Full-width project card — mirrors the desktop .projectCard glass treatment. */
 .card {
-	height: 100%;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	text-decoration: none;
+	color: inherit;
 	background-image: var(--glass-surface), var(--glass-edge-bottom);
 	background-origin: border-box;
 	background-clip: padding-box, border-box;
@@ -25,53 +49,15 @@
 	overflow: hidden;
 	-webkit-backdrop-filter: blur(3px) saturate(120%);
 	backdrop-filter: blur(3px) saturate(120%);
-	box-shadow: var(--glass-inset-bottom);
-}
-
-.activeCard {
-	position: relative;
-	width: 70%;
-	z-index: 3;
-	border-radius: 1rem;
 	box-shadow: var(--project-card-hover-shadow), var(--glass-inset-bottom);
-	/* Let vertical gestures scroll the page; horizontal is captured by framer drag. */
-	touch-action: pan-y;
-}
-
-.sideCard {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 30%;
-	padding: 0;
-	border: none;
-	background: transparent;
-	opacity: 0.55;
-	z-index: 1;
-}
-
-.sideCard.prev {
-	left: 0;
-	transform: scale(0.9);
-	transform-origin: left center;
-}
-
-.sideCard.next {
-	right: 0;
-	transform: scale(0.9);
-	transform-origin: right center;
-}
-
-.cardLink {
-	display: block;
-	text-decoration: none;
-	color: inherit;
 }
 
 .imageWrapper {
 	position: relative;
 	width: 100%;
+	/* Landscape ratio matching the 16:9 project screenshots — same height on every card. */
 	aspect-ratio: 16 / 9;
+	flex: 0 0 auto;
 	overflow: hidden;
 	background: var(--project-image-bg);
 }
@@ -84,57 +70,60 @@
 	user-select: none;
 }
 
-.overlay {
+/* Persistent affordance that the card opens an external link. */
+.linkBadge {
 	position: absolute;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.5);
+	top: 0.6rem;
+	right: 0.6rem;
+	width: 1.85rem;
+	height: 1.85rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	opacity: 0;
-	transition: opacity 0.3s ease;
-}
-
-.activeCard:active .overlay {
-	opacity: 1;
-}
-
-.linkIcon {
-	width: 2.5rem;
-	height: 2.5rem;
+	background: rgba(0, 0, 0, 0.45);
+	border-radius: 50%;
 	color: white;
 }
 
+.linkBadge svg {
+	width: 1rem;
+	height: 1rem;
+}
+
+/* Normalized space below the image: a fixed minimum height so cards stay the same
+   size regardless of how many lines the description runs to, OR whether the tech
+   badges wrap to a second row. Full text, no ellipsis; the tech badges are pinned to
+   the bottom so short descriptions don't look unbalanced. */
 .content {
+	flex: 1 1 auto;
+	min-height: 17rem;
 	padding: 1rem;
 	display: flex;
 	flex-direction: column;
 	gap: 0.625rem;
+	text-align: left;
 }
 
 .title {
-	font-size: 1.25rem;
+	font-size: 1.6rem;
 	font-weight: 600;
 	margin: 0;
 	line-height: 1.3;
 }
 
 .description {
-	font-size: 0.95rem;
+	font-size: 1.05rem;
 	line-height: 1.5;
 	margin: 0;
 	opacity: 0.7;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
 }
 
 .tech {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5rem;
+	margin-top: auto;
+	padding-top: 0.5rem;
 }
 
 .techBadge {
