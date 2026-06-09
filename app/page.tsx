@@ -4,7 +4,6 @@ import { useState, useEffect, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { HiSun, HiMoon } from "react-icons/hi";
 import { SiReact, SiNextdotjs, SiNodedotjs, SiMongodb, SiJavascript, SiTypescript, SiSelenium } from "react-icons/si";
-import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { FaRegHand, FaRegHandPointer, FaRegHandBackFist } from "react-icons/fa6";
 import emailjs from "@emailjs/browser";
 import styles from "./page.module.css";
@@ -12,6 +11,7 @@ import Navbar from "@/components/NavBar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import DotGrid from "@/components/DotGrid/DotGrid";
 import DotControls from "@/components/DotGrid/DotControls";
+import ProjectCard, { Project } from "@/components/ProjectCard/ProjectCard";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 30 },
@@ -22,7 +22,7 @@ const messagePlaceholders = ["Your next big idea...", "Your follow-up question..
 
 const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
 
-const projects = [
+const projects: Project[] = [
 	{
 		id: 0,
 		title: "/obsidian-buddy",
@@ -312,28 +312,8 @@ export default function Home() {
 
 					<div className={styles.projectsGrid}>
 						{projects.map((project, index) => (
-							<motion.div key={project.id} className={styles.projectCard} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
-								<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`}>
-									<div className={styles.projectImageWrapper}>
-										<img src={project.image} alt={project.title} className={styles.projectImage} />
-										<div className={styles.projectOverlay}>
-											<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
-										</div>
-									</div>
-
-									<div className={styles.projectContent}>
-										<h3 className={styles.projectTitle}>{project.title}</h3>
-										<p className={styles.projectDescription}>{project.description}</p>
-
-										<div className={styles.projectTech}>
-											{project.tech.map((tech, techIndex) => (
-												<span key={techIndex} className={styles.techBadge}>
-													{tech}
-												</span>
-											))}
-										</div>
-									</div>
-								</a>
+							<motion.div key={project.id} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
+								<ProjectCard project={project} />
 							</motion.div>
 						))}
 					</div>
