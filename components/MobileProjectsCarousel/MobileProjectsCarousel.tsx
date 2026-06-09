@@ -150,7 +150,7 @@ export default function MobileProjectsCarousel({ projects }: { projects: Project
 				>
 					{Array.from({ length: COPIES }).flatMap((_, copy) =>
 						projects.map((project) => (
-							<div className={styles.slide} key={`${copy}-${project.id}`} style={{ width: width ? `${width}px` : "100%" }}>
+							<div className={styles.slide} key={`${copy}-${project.id}`}>
 								<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.card} aria-label={`View ${project.title}`} draggable={false}>
 									<div className={styles.imageWrapper}>
 										<img src={project.image} alt={project.title} className={styles.image} draggable={false} />

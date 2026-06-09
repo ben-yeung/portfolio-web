@@ -23,8 +23,12 @@
 }
 
 .slide {
-	flex: 0 0 auto;
-	/* width is set inline to the measured viewport width (full-width slides) */
+	/* Full-width slides sized in CSS (not via React state) so the slide width updates in the
+	   same layout pass as a browser resize. If width came from JS state instead, it would lag a
+	   frame behind the track's px offset (set synchronously in the resize handler), and the
+	   active card would jitter horizontally on every resize event. */
+	flex: 0 0 100%;
+	width: 100%;
 	display: flex;
 	box-sizing: border-box;
 	/* Inset the card within its full-width slide: gives each card a horizontal margin
