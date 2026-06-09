@@ -44,10 +44,14 @@ export const DEFAULTS: DotGridParams = {
 	colorLight: [135, 117, 100], // accent #877564
 };
 
-// TODO(dotgrid-easter-egg): expose setParams() to a hidden, discoverable control panel
-// that tweaks the live effect; trigger + panel UI are TBD — see
-// docs/superpowers/specs/2026-06-08-dot-grid-background-design.md §Deferred Work.
-// Sibling: components/DotGrid/DotGrid.tsx
+// The live control panel now exists: components/DotGrid/DotControls.tsx surfaces a curated
+// subset of these params (radius, spacing, edgeNoise, wake, grow, baseOpacity). The technical
+// params (push, fade, falloff) and the dot colors are intentionally left off the panel — tune
+// them via the dev-only window.dotGrid console bridge.
+// Spec: docs/superpowers/specs/2026-06-09-dot-grid-customization-panel-design.md
+// TODO(dotgrid-advanced-controls): optionally surface push/fade/falloff + color pickers behind
+// an "advanced" disclosure in the panel. Siblings: components/DotGrid/DotControls.tsx,
+// components/DotGrid/DotGrid.tsx
 
 let params: DotGridParams = { ...DEFAULTS };
 const subscribers = new Set<() => void>();

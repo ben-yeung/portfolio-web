@@ -91,16 +91,6 @@ body.light .customCursor {
 	font-family: var(--font-serif), serif;
 }
 
-.nameUnder {
-	/* Drop "Yeung" behind the dot canvas (z-index: -1) so the dots render over it,
-	   while "Ben" and the rest of the page stay in front. This relies on no
-	   transformed ancestor between here and the root — heroName uses an
-	   opacity-only entrance (no y-translate) precisely so it stays in the root
-	   stacking context. */
-	position: relative;
-	z-index: -2;
-}
-
 .rotatingTitleContainer {
 	height: clamp(3rem, 7vw, 6rem);
 	margin-top: 1rem;
