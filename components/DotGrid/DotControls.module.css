@@ -1,0 +1,116 @@
+/* Floating "customize background" button — a bottom-right twin of the theme toggle.
+   The themed border ring + color come from the global `.themeToggle` class (app/globals.css),
+   reused on the button; this module supplies the base circle, position, and svg size. */
+.controlsToggle {
+	position: fixed;
+	bottom: 2.25rem;
+	right: 2rem;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	background: transparent;
+	cursor: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.controlsToggle svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+/* Anchored glass popover, sitting just above the button (button is 3rem tall at bottom 2.25rem,
+   + ~0.75rem gap). Reuses the shared liquid-glass tokens so it matches the navbar/cards and is
+   theme-aware automatically. */
+.panel {
+	position: fixed;
+	right: 2rem;
+	bottom: 6rem;
+	width: 220px;
+	padding: 0.9rem 1rem;
+	border-radius: 14px;
+	background-image: var(--glass-surface), var(--glass-edge);
+	background-origin: border-box;
+	background-clip: padding-box, border-box;
+	border: 1px solid transparent;
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), var(--glass-inset);
+	color: var(--text-primary);
+	cursor: none;
+	z-index: 1001;
+	transform-origin: bottom right;
+}
+
+.panelHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.75rem;
+}
+
+.panelTitle {
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	opacity: 0.85;
+}
+
+.resetButton {
+	background: transparent;
+	border: none;
+	color: var(--accent-color);
+	font-size: 0.7rem;
+	cursor: none;
+	padding: 0;
+}
+
+.resetButton:hover {
+	text-decoration: underline;
+}
+
+.row {
+	display: block;
+	margin: 0.6rem 0;
+}
+
+.rowLabel {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.72rem;
+	opacity: 0.8;
+	margin-bottom: 0.3rem;
+}
+
+.rowValue {
+	opacity: 0.7;
+	font-variant-numeric: tabular-nums;
+}
+
+.slider {
+	width: 100%;
+	accent-color: var(--accent-color);
+	cursor: none;
+}
+
+/* Mirror the theme toggle's responsive shrink (app/page.module.css @media max-width:768px). */
+@media (max-width: 768px) {
+	.controlsToggle {
+		bottom: 1.25rem;
+		right: 1.5rem;
+		width: 2.5rem;
+		height: 2.5rem;
+	}
+
+	.controlsToggle svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	.panel {
+		right: 1.5rem;
+		bottom: 4.5rem;
+	}
+}
