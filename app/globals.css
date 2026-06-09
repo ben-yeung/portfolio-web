@@ -163,11 +163,7 @@ body.light nav {
 	}
 }
 
-/* Hover pill fill (geometry lives in Navbar.module.css) */
-body.dark nav a::before {
-	background: rgba(255, 255, 255, 0.1);
-}
-
-body.light nav a::before {
-	background: rgba(255, 255, 255, 0.45);
+/* Light-mode underline uses the accent color */
+body.light nav a::after {
+	background-color: #877564 !important;
 }

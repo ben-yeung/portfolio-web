@@ -24,9 +24,6 @@
 	font-size: 1rem;
 	font-weight: 500;
 	position: relative;
-	/* own stacking context so the hover pill (::before, z-index: -1) sits
-	   behind the label without falling behind the navbar's glass background */
-	isolation: isolate;
 	text-decoration: none;
 	color: inherit;
 	padding: 0 0.7rem;
@@ -34,22 +31,20 @@
 	align-items: center;
 }
 
-.navItem::before {
+.navItem::after {
 	content: "";
 	position: absolute;
-	top: 50%;
-	left: 0;
-	right: 0;
-	height: 2.1rem;
-	transform: translateY(-50%);
-	border-radius: 1.05rem;
-	opacity: 0;
-	z-index: -1;
-	transition: opacity 0.25s ease;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 2px;
+	background-color: rgba(255, 255, 255, 0.45);
+	transform: translateX(-50%);
+	transition: width 0.3s ease;
 }
 
-.navItem:hover::before {
-	opacity: 1;
+.navItem:hover::after {
+	width: 80%;
 }
 
 @media (max-width: 768px) {
