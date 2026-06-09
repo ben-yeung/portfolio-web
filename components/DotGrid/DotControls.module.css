@@ -67,9 +67,9 @@
 	padding: 0;
 }
 
-/* Light mode: same blue-grey accent, lightened for the warm light surface. */
+/* Light mode swaps the panel accent from blue-grey to the warm/beige site accent. */
 body.light .resetButton {
-	color: color-mix(in srgb, var(--input-focus-border) 58%, #ffffff);
+	color: var(--accent-color);
 }
 
 .resetButton:hover {
@@ -98,6 +98,11 @@ body.light .resetButton {
 	width: 100%;
 	accent-color: var(--input-focus-border);
 	cursor: none;
+}
+
+/* Light mode swaps the slider accent from blue-grey to the warm/beige site accent. */
+body.light .slider {
+	accent-color: var(--accent-color);
 }
 
 /* Hide the customization affordance at mobile widths: the DotGrid is a hover-driven
