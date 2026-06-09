@@ -16,9 +16,17 @@ const fadeInUp = {
 	animate: { opacity: 1, y: 0 },
 };
 
-const messagePlaceholders = ["Your next big idea...", "Your follow-up question...", "A project proposal...", "Just saying hello...", "Let's build something..."];
+const messagePlaceholders = ["Your next big idea...", "Your follow-up question...", "A project proposal...", "Just saying hello...", "Looking to build something..."];
 
 const projects = [
+	{
+		id: 0,
+		title: "/obsidian-buddy",
+		description: "A modular AI assistant plugin for Obsidian with permissioned reads/writes to your vault. Modules evolve through use, powered by OpenRouter.",
+		tech: ["React", "TypeScript", "Obsidian", "OpenRouter"],
+		image: "/assets/obsidian.png",
+		link: "https://github.com/ben-yeung/obsidian-buddy",
+	},
 	{
 		id: 1,
 		title: "/crumbs-starter-kit",
