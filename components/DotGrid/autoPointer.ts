@@ -20,6 +20,11 @@ export const AUTO_NUDGE = 0.42;
  *  center reach the very edge (half the blob spills off, exactly like a mouse at the edge). */
 export const AUTO_MARGIN = 0;
 
+/** When vertical motion is preferred (tall/portrait screens), the max the heading may lean
+ *  away from straight up/down, in radians (~34°). Keeps the blob clearly vertical-dominant
+ *  while still allowing a gentle side-to-side drift. */
+export const AUTO_MAX_OFF_VERTICAL = 0.6;
+
 export interface AutoState {
 	x: number;
 	y: number;
@@ -27,15 +32,35 @@ export interface AutoState {
 	vy: number;
 }
 
-/** A velocity vector of magnitude AUTO_SPEED at a random angle. rng injectable for determinism. */
-export function seedVelocity(rng: () => number = Math.random): { vx: number; vy: number } {
-	const angle = rng() * Math.PI * 2;
-	return { vx: Math.cos(angle) * AUTO_SPEED, vy: Math.sin(angle) * AUTO_SPEED };
+/**
+ * Clamp a velocity's heading into a cone around the nearest vertical (straight up or down),
+ * preserving speed and the up/down + left/right signs. On tall portrait screens an unbiased
+ * heading can sit near-horizontal and read as "stuck" ping-ponging side to side; this keeps
+ * motion vertical-dominant while still allowing a gentle sideways drift.
+ */
+function biasToVertical(vx: number, vy: number): { vx: number; vy: number } {
+	const speed = Math.hypot(vx, vy) || AUTO_SPEED;
+	const downward = vy >= 0 ? 1 : -1;
+	// Angle away from the vertical axis: 0 = straight up/down, ±90° = horizontal.
+	let off = Math.atan2(vx, Math.abs(vy));
+	if (off > AUTO_MAX_OFF_VERTICAL) off = AUTO_MAX_OFF_VERTICAL;
+	else if (off < -AUTO_MAX_OFF_VERTICAL) off = -AUTO_MAX_OFF_VERTICAL;
+	return { vx: Math.sin(off) * speed, vy: downward * Math.cos(off) * speed };
 }
 
-/** Build a fresh virtual-pointer state at (x, y) with a random initial heading. */
-export function createAutoState(x: number, y: number, rng: () => number = Math.random): AutoState {
-	const { vx, vy } = seedVelocity(rng);
+/** A velocity vector of magnitude AUTO_SPEED at a random angle. When `preferVertical` is set
+ *  the heading is biased toward straight up/down (see biasToVertical). rng injectable. */
+export function seedVelocity(preferVertical = false, rng: () => number = Math.random): { vx: number; vy: number } {
+	const angle = rng() * Math.PI * 2;
+	const vx = Math.cos(angle) * AUTO_SPEED;
+	const vy = Math.sin(angle) * AUTO_SPEED;
+	return preferVertical ? biasToVertical(vx, vy) : { vx, vy };
+}
+
+/** Build a fresh virtual-pointer state at (x, y) with a random initial heading (biased toward
+ *  vertical when `preferVertical`). */
+export function createAutoState(x: number, y: number, preferVertical = false, rng: () => number = Math.random): AutoState {
+	const { vx, vy } = seedVelocity(preferVertical, rng);
 	return { x, y, vx, vy };
 }
 
@@ -44,7 +69,7 @@ export function createAutoState(x: number, y: number, rng: () => number = Math.r
  * apply a small random turn (renormalized back to AUTO_SPEED so speed stays constant).
  * Mutates `s` in place.
  */
-export function bounceStep(s: AutoState, width: number, height: number, rng: () => number = Math.random): void {
+export function bounceStep(s: AutoState, width: number, height: number, preferVertical = false, rng: () => number = Math.random): void {
 	s.x += s.vx;
 	s.y += s.vy;
 
@@ -82,5 +107,13 @@ export function bounceStep(s: AutoState, width: number, height: number, rng: () 
 		const mag = Math.hypot(nx, ny) || 1;
 		s.vx = (nx / mag) * AUTO_SPEED;
 		s.vy = (ny / mag) * AUTO_SPEED;
+
+		// Re-bias toward vertical after the nudge so repeated random turns can't random-walk
+		// the blob back into a near-horizontal drift on tall screens.
+		if (preferVertical) {
+			const b = biasToVertical(s.vx, s.vy);
+			s.vx = b.vx;
+			s.vy = b.vy;
+		}
 	}
 }

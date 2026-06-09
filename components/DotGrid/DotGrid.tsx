@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import styles from "./DotGrid.module.css";
 import { getParams, setParams, subscribe } from "./dotGridStore";
 import { dotGridSupported } from "./canRender";
-import { AutoState, createAutoState, bounceStep } from "./autoPointer";
+import { AutoState, createAutoState, bounceStep, AUTO_SPEED } from "./autoPointer";
 
 interface Follower {
 	x: number;
@@ -18,7 +18,7 @@ interface Dot {
 
 const FOLLOWER_COUNT = 6;
 const HEAD_EASE = 0.35; // how fast the head follower tracks the pointer
-const TOUCH_EASE = 0.18; // how fast the virtual pointer slides toward an active touch
+const TOUCH_EASE = 0.08; // how fast the virtual pointer slides toward an active touch (low = smooth, gradual)
 const DOT_BASE_RADIUS = 1.1; // px, before growth
 const MAX_DPR = 2;
 
@@ -58,10 +58,14 @@ export default function DotGrid() {
 		const followers: Follower[] = Array.from({ length: FOLLOWER_COUNT }, () => ({ x: -9999, y: -9999 }));
 		const mouse = { x: -9999, y: -9999 };
 
+		// Tall/portrait screens read better with vertical-dominant blob motion. Recomputed per
+		// use (not cached) so a device rotation is respected on the next seed / bounce.
+		const isPortrait = () => window.innerHeight > window.innerWidth;
+
 		// Pointer-source state. `mode` selects what drives `mouse` each frame; `auto` is the
 		// virtual pointer integrated by the bounce motion; touch* tracks an active finger.
 		let mode: "pointer" | "auto" = touchOnly ? "auto" : "pointer";
-		let auto: AutoState = createAutoState(window.innerWidth / 2, window.innerHeight / 2);
+		let auto: AutoState = createAutoState(window.innerWidth / 2, window.innerHeight / 2, isPortrait());
 		let touchActive = false;
 		const touchPoint = { x: 0, y: 0 };
 
@@ -99,7 +103,7 @@ export default function DotGrid() {
 			if (touchOnly || mode === "auto") return;
 			const lastX = followers[0].x < -9000 ? window.innerWidth / 2 : followers[0].x;
 			const lastY = followers[0].y < -9000 ? window.innerHeight / 2 : followers[0].y;
-			auto = createAutoState(lastX, lastY);
+			auto = createAutoState(lastX, lastY, isPortrait());
 			mode = "auto";
 		};
 		const onMouseLeave = () => enterAuto();
@@ -132,12 +136,26 @@ export default function DotGrid() {
 			// mode `mouse` is already maintained by onMouseMove, so nothing to do here.
 			if (mode === "auto") {
 				if (touchActive) {
-					// Follow the finger.
+					// Ease toward the finger, then steer the autonomous velocity to match the
+					// direction of THAT movement. So when the finger lifts, the blob resumes
+					// traveling the way it was just pulled — tap below a rising blob and it
+					// continues downward, instead of snapping back to its old upward heading.
+					const px = auto.x;
+					const py = auto.y;
 					auto.x += (touchPoint.x - auto.x) * TOUCH_EASE;
 					auto.y += (touchPoint.y - auto.y) * TOUCH_EASE;
+					const dx = auto.x - px;
+					const dy = auto.y - py;
+					const d = Math.hypot(dx, dy);
+					if (d > 0.05) {
+						// Once the blob is nearly on the finger the delta shrinks; below the
+						// threshold we keep the last good heading rather than jittering.
+						auto.vx = (dx / d) * AUTO_SPEED;
+						auto.vy = (dy / d) * AUTO_SPEED;
+					}
 				} else if (!reduceMotion) {
 					// Autonomous slow bounce. (reduced-motion + no touch => hold last position.)
-					bounceStep(auto, window.innerWidth, window.innerHeight);
+					bounceStep(auto, window.innerWidth, window.innerHeight, isPortrait());
 				}
 				mouse.x = auto.x;
 				mouse.y = auto.y;
