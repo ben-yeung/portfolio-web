@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { HiSun, HiMoon } from "react-icons/hi";
-import { SiReact, SiNextdotjs, SiNodedotjs, SiTailwindcss, SiMongodb, SiJavascript, SiTypescript, SiSelenium } from "react-icons/si";
+import { SiReact, SiNextdotjs, SiNodedotjs, SiMongodb, SiJavascript, SiTypescript, SiSelenium } from "react-icons/si";
 import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import { FaRegHand, FaRegHandPointer, FaRegHandBackFist } from "react-icons/fa6";
 import emailjs from "@emailjs/browser";
@@ -17,6 +17,8 @@ const fadeInUp = {
 };
 
 const messagePlaceholders = ["Your next big idea...", "Your follow-up question...", "A project proposal...", "Just saying hello...", "Looking to build something..."];
+
+const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
 
 const projects = [
 	{
@@ -93,8 +95,6 @@ export default function Home() {
 	const [isPlaceholderFading, setIsPlaceholderFading] = useState(false);
 	const [isMessageFocused, setIsMessageFocused] = useState(false);
 
-	const titles = ["a full-stack developer.", "a foodie.", "a keyboard enthusiast.", "a matcha enjoyer.", "a TFT strategist."];
-
 	useEffect(() => {
 		document.body.classList.remove("dark", "light");
 		document.body.classList.add(isDark ? "dark" : "light");
@@ -136,7 +136,7 @@ export default function Home() {
 		}
 
 		return () => clearTimeout(timeout);
-	}, [displayedText, isTyping, currentTitle, titles, startTypewriter]);
+	}, [displayedText, isTyping, currentTitle, startTypewriter]);
 
 	useEffect(() => {
 		if (submitStatus) {
