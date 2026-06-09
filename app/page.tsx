@@ -172,7 +172,7 @@ export default function Home() {
 			setMousePosition({ x: e.clientX, y: e.clientY });
 
 			const target = e.target as HTMLElement;
-			const isClickable = target.tagName === "A" || target.tagName === "BUTTON" || target.closest("a") || target.closest("button") || target.onclick !== null || target.style.cursor === "pointer";
+			const isClickable = target.tagName === "A" || target.tagName === "BUTTON" || target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.closest("a") || target.closest("button") || target.onclick !== null || target.style.cursor === "pointer";
 			setIsHoveringClickable(!!isClickable);
 		};
 
@@ -236,8 +236,8 @@ export default function Home() {
 					<motion.p className={styles.heroGreeting} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}>
 						Hey, I'm
 					</motion.p>
-					<motion.h1 className={styles.heroName} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}>
-						Ben Yeung
+					<motion.h1 className={styles.heroName} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}>
+						Ben <span className={styles.nameUnder}>Yeung</span>
 					</motion.h1>
 					<motion.div className={styles.rotatingTitleContainer} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8, ease: "easeOut" }}>
 						<h2 className={styles.rotatingTitle}>
