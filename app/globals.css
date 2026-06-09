@@ -118,19 +118,33 @@ body.dark .themeToggle {
 	color: rgba(255, 255, 255, 0.45) !important;
 }
 
-/* Navbar Theme Styles */
+/* Navbar Theme Styles — liquid glass */
 body.dark nav {
-	background: #18181b !important;
-	border: 1px solid rgba(255, 255, 255, 0.15) !important;
-	box-shadow: 0 8px 32px rgba(255, 255, 255, 0.05) !important;
+	/* layer 1 (padding-box): translucent surface; layer 2 (border-box): gradient-lit edge */
+	background-image:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
+		linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0.05)) !important;
+	background-origin: border-box !important;
+	background-clip: padding-box, border-box !important;
+	border: 1px solid transparent !important;
+	-webkit-backdrop-filter: blur(18px) saturate(170%);
+	backdrop-filter: blur(18px) saturate(170%);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.32),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3),
+		inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
 }
 
 body.light nav {
-	background: #f5ebe1 !important;
-	border: 1px solid rgba(0, 0, 0, 0.1) !important;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
-}
-
-body.light nav a::after {
-	background-color: #877564 !important;
+	background-image:
+		linear-gradient(180deg, rgba(245, 235, 225, 0.6), rgba(135, 117, 100, 0.14)),
+		linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.15) 45%, rgba(135, 117, 100, 0.25)) !important;
+	background-origin: border-box !important;
+	background-clip: padding-box, border-box !important;
+	border: 1px solid transparent !important;
+	-webkit-backdrop-filter: blur(18px) saturate(150%);
+	backdrop-filter: blur(18px) saturate(150%);
+	box-shadow:
+		0 8px 30px rgba(0, 0, 0, 0.12),
+		inset 0 1px 1px rgba(255, 255, 255, 0.7) !important;
 }
