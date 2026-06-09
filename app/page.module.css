@@ -10,7 +10,7 @@
 
 .customCursor {
 	position: fixed;
-	font-size: 22px;
+	font-size: 1.375rem;
 	line-height: 1;
 	color: var(--text-primary);
 	pointer-events: none;
@@ -26,12 +26,12 @@
 }
 
 .customCursor.cursorHover {
-	font-size: 25px;
+	font-size: 1.5625rem;
 	transform: translate(-32%, -8%) rotate(-12deg) scale(1.1);
 }
 
 .customCursor.cursorClick {
-	font-size: 28px;
+	font-size: 1.75rem;
 	transform: translate(-32%, -8%) rotate(-12deg) scale(0.85);
 }
 
@@ -129,7 +129,9 @@ body.light .customCursor {
 }
 
 .aboutContainer {
-	max-width: 1400px;
+	/* About is a two-column grid; the full section width (used by projects) makes the text
+	   column too long to read, so cap it narrower above the baseline: 1400px → 2300px @4K. */
+	max-width: clamp(1400px, calc(1400px + (100vw - 1920px) * 0.46875), 2300px);
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1.2fr;
@@ -146,7 +148,7 @@ body.light .customCursor {
 .aboutImage {
 	position: relative;
 	width: 100%;
-	max-width: 500px;
+	max-width: 31.25rem;
 	aspect-ratio: 1;
 	border-radius: 2rem;
 	overflow: hidden;
@@ -314,7 +316,7 @@ body.light .customCursor {
 }
 
 .projectsContainer {
-	max-width: 1400px;
+	max-width: var(--section-max-width);
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -457,7 +459,7 @@ body.light .customCursor {
 
 .contactContainer {
 	min-height: 66vh;
-	max-width: 1400px;
+	max-width: var(--section-max-width);
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -480,12 +482,15 @@ body.light .customCursor {
 	line-height: 1.7;
 	margin: 0;
 	opacity: 0.85;
-	max-width: 600px;
+	/* Widen toward 4K (600px @1920 → 950px @3840) so the contact block doesn't read as a
+	   thin column on large screens; floors at 600px for 1080p and below. */
+	max-width: clamp(600px, calc(600px + (100vw - 1920px) * 0.18229167), 950px);
 }
 
 .contactForm {
 	width: 100%;
-	max-width: 600px;
+	/* Widen toward 4K (600px @1920 → 1200px @3840); floors at 600px for 1080p and below. */
+	max-width: clamp(600px, calc(600px + (100vw - 1920px) * 0.3125), 1200px);
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
@@ -500,7 +505,7 @@ body.light .customCursor {
 }
 
 .formLabel {
-	font-size: 1rem;
+	font-size: var(--contact-control-font);
 	font-weight: 500;
 	opacity: 0.9;
 }
@@ -508,8 +513,8 @@ body.light .customCursor {
 .formInput,
 .formTextarea {
 	width: 100%;
-	padding: 1rem;
-	font-size: 1rem;
+	padding: 1em;
+	font-size: var(--contact-control-font);
 	font-family: inherit;
 	background: var(--input-bg);
 	-webkit-backdrop-filter: blur(8px) saturate(120%);
@@ -528,7 +533,7 @@ body.light .customCursor {
 }
 
 .formTextarea {
-	min-height: 150px;
+	min-height: 9.375rem;
 	resize: vertical;
 }
 
@@ -542,8 +547,8 @@ body.light .customCursor {
 }
 
 .submitButton {
-	padding: 1rem 2rem;
-	font-size: 1.1rem;
+	padding: 0.9em 1.8em;
+	font-size: calc(var(--contact-control-font) * 1.1);
 	font-weight: 500;
 	/* Liquid-glass surface matching the navbar / cards. Theme-aware text color so
 	   it stays readable on both the dark slate and light warm glass. Reset the

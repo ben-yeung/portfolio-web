@@ -1,5 +1,26 @@
 html {
 	scroll-behavior: auto;
+	/* Fluid root scaling for large screens. The whole design is rem-based, so growing the
+	   root font-size proportionally scales every font, space, and rem-capped clamp() above
+	   the 1080p (1920px-wide) baseline, holding at 4K (3840px). The ramp starts at 1080p
+	   (not 1440p) so OS-scaled displays — e.g. a 1440p monitor at 125%, which reports a
+	   ~2048px CSS viewport — land inside the scaling zone instead of stuck at baseline.
+	   Bounds are in rem (not px) so browser zoom / user font-size preferences still apply
+	   (WCAG 1.4.4); vw only drives the in-between growth.
+	   1rem=16px, 1.875rem=30px (1.875x), 120rem=1920px baseline, 240rem=3840px cap (120rem span). */
+	font-size: clamp(1rem, calc(1rem + 0.875 * (100vw - 120rem) / 120), 1.875rem);
+
+	/* Section width grows FASTER than proportional above the 1920px baseline so large
+	   screens fill out instead of leaving a narrow centered island (proportional scaling
+	   alone holds a constant ~55% fill at every resolution). px/vw-based — independent of
+	   the font scale above — so 1080p and below is untouched (clamp floors at 1400px).
+	   1400px @1920 → 3200px @3840 (~83% fill), then held. */
+	--section-max-width: clamp(1400px, calc(1400px + (100vw - 1920px) * 0.9375), 3200px);
+
+	/* Contact form controls (inputs, labels, submit) read too small on large screens when
+	   left to the root scale, so they grow on their own steeper curve. px/vw-based and floored
+	   at 16px so 1080p and below is unchanged; paddings use em to track this font size. */
+	--contact-control-font: clamp(16px, calc(16px + (100vw - 1920px) * 0.01041667), 36px);
 }
 
 html,
