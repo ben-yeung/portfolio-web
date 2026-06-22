@@ -27,6 +27,7 @@ export default function CarouselRow({ projects, direction, inView }: CarouselRow
 	const offsetRef = useRef(0);
 	const setWidthRef = useRef(0);
 	const pointerRef = useRef({ x: 0, y: 0, inside: false });
+	const cachedRectRef = useRef<DOMRect | null>(null);
 	const focusedRef = useRef(false);
 	const reducedRef = useRef(false);
 
@@ -70,27 +71,37 @@ export default function CarouselRow({ projects, direction, inView }: CarouselRow
 	useEffect(() => {
 		const root = rootRef.current;
 		if (!root) return;
+
+		const cacheRect = () => { cachedRectRef.current = root.getBoundingClientRect(); };
+
+		const onEnter = () => { cacheRect(); };
 		const onMove = (e: MouseEvent) => {
 			pointerRef.current = { x: e.clientX, y: e.clientY, inside: true };
 		};
 		const onLeave = () => {
 			pointerRef.current.inside = false;
 		};
+		// Keep cached rect fresh while the pointer is inside and the page scrolls.
+		const onScroll = () => { if (pointerRef.current.inside) cacheRect(); };
 		const onFocusIn = () => {
 			focusedRef.current = true;
 		};
 		const onFocusOut = () => {
 			focusedRef.current = false;
 		};
+		root.addEventListener("mouseenter", onEnter);
 		root.addEventListener("mousemove", onMove);
 		root.addEventListener("mouseleave", onLeave);
 		root.addEventListener("focusin", onFocusIn);
 		root.addEventListener("focusout", onFocusOut);
+		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => {
+			root.removeEventListener("mouseenter", onEnter);
 			root.removeEventListener("mousemove", onMove);
 			root.removeEventListener("mouseleave", onLeave);
 			root.removeEventListener("focusin", onFocusIn);
 			root.removeEventListener("focusout", onFocusOut);
+			window.removeEventListener("scroll", onScroll);
 		};
 	}, []);
 
@@ -110,11 +121,10 @@ export default function CarouselRow({ projects, direction, inView }: CarouselRow
 
 			const setWidth = setWidthRef.current;
 			if (setWidth > 0 && root.offsetParent !== null) {
-				// getBoundingClientRect() forces a synchronous layout reflow. Only call
-				// it when the pointer is inside — when it isn't, rowVelocity() short-circuits
-				// and never reads relX/rowWidth anyway, so the reflow buys nothing.
+				// Read from the rect cached by mouseenter/scroll — never call getBoundingClientRect()
+				// inside the animation loop, which would force a synchronous layout read every frame.
 				const p = pointerRef.current;
-				const rect = p.inside ? root.getBoundingClientRect() : null;
+				const rect = p.inside ? cachedRectRef.current : null;
 				const overRow = !!rect && p.y >= rect.top && p.y <= rect.bottom;
 				const { v, leftF, rightF } = rowVelocity({
 					pointerInside: p.inside,

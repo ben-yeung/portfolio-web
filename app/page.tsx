@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { HiSun, HiMoon } from "react-icons/hi";
 import { SiReact, SiNextdotjs, SiNodedotjs, SiMongodb, SiJavascript, SiTypescript, SiSelenium } from "react-icons/si";
@@ -37,12 +37,7 @@ export default function Home() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
 	const [startTypewriter, setStartTypewriter] = useState(false);
-	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-	// Custom cursor stays hidden until the first real mouse move (kills the top-left snap on
-	// load) and hides again on blur / when the pointer leaves the window (kills the stuck cursor).
-	const [cursorVisible, setCursorVisible] = useState(false);
-	const [isHoveringClickable, setIsHoveringClickable] = useState(false);
-	const [isMouseDown, setIsMouseDown] = useState(false);
+	const cursorRef = useRef<HTMLDivElement>(null);
 	const [placeholderIndex, setPlaceholderIndex] = useState(0);
 	const [isPlaceholderFading, setIsPlaceholderFading] = useState(false);
 	const [isMessageFocused, setIsMessageFocused] = useState(false);
@@ -119,19 +114,43 @@ export default function Home() {
 	}, [isMessageFocused]);
 
 	useEffect(() => {
+		const cursor = cursorRef.current;
+		if (!cursor) return;
+
+		let isClickable = false;
+
 		const handleMouseMove = (e: MouseEvent) => {
-			setMousePosition({ x: e.clientX, y: e.clientY });
-			setCursorVisible(true);
+			cursor.style.left = `${e.clientX}px`;
+			cursor.style.top = `${e.clientY}px`;
+			cursor.classList.remove(styles.cursorHidden);
 
 			const target = e.target as HTMLElement;
-			const isClickable = target.tagName === "A" || target.tagName === "BUTTON" || target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.closest("a") || target.closest("button") || target.onclick !== null || target.style.cursor === "pointer";
-			setIsHoveringClickable(!!isClickable);
+			const clickable = !!(
+				target.tagName === "A" ||
+				target.tagName === "BUTTON" ||
+				target.tagName === "INPUT" ||
+				target.tagName === "TEXTAREA" ||
+				target.closest("a") ||
+				target.closest("button") ||
+				target.onclick !== null ||
+				target.style.cursor === "pointer"
+			);
+			isClickable = clickable;
+			if (!cursor.classList.contains(styles.cursorClick)) {
+				cursor.classList.toggle(styles.cursorHover, clickable);
+			}
 		};
 
-		const handleMouseDown = () => setIsMouseDown(true);
-		const handleMouseUp = () => setIsMouseDown(false);
-		const handleBlur = () => setCursorVisible(false);
-		const handleDocMouseLeave = () => setCursorVisible(false);
+		const handleMouseDown = () => {
+			cursor.classList.add(styles.cursorClick);
+			cursor.classList.remove(styles.cursorHover);
+		};
+		const handleMouseUp = () => {
+			cursor.classList.remove(styles.cursorClick);
+			cursor.classList.toggle(styles.cursorHover, isClickable);
+		};
+		const handleBlur = () => cursor.classList.add(styles.cursorHidden);
+		const handleDocMouseLeave = () => cursor.classList.add(styles.cursorHidden);
 
 		window.addEventListener("mousemove", handleMouseMove);
 		window.addEventListener("mousedown", handleMouseDown);
@@ -175,14 +194,10 @@ export default function Home() {
 		<div className={styles.container}>
 			<DotGrid />
 			<DotControls />
-			<div
-				className={`${styles.customCursor} ${cursorVisible ? "" : styles.cursorHidden} ${isHoveringClickable ? styles.cursorHover : ""} ${isMouseDown ? styles.cursorClick : ""}`}
-				style={{
-					left: `${mousePosition.x}px`,
-					top: `${mousePosition.y}px`,
-				}}
-			>
-				{isMouseDown ? <FaRegHandBackFist /> : isHoveringClickable ? <FaRegHandPointer /> : <FaRegHand />}
+			<div ref={cursorRef} className={`${styles.customCursor} ${styles.cursorHidden}`}>
+				<span className={styles.iconDefault}><FaRegHand /></span>
+				<span className={styles.iconHover}><FaRegHandPointer /></span>
+				<span className={styles.iconClick}><FaRegHandBackFist /></span>
 			</div>
 			<Navbar />
 

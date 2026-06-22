@@ -40,6 +40,29 @@
 	transform: translate(-32%, -8%) rotate(-12deg) scale(0.85);
 }
 
+/* Icon visibility — only the relevant icon is shown via CSS, controlled by
+   state classes toggled directly on the cursor element (no React re-render). */
+.iconHover,
+.iconClick {
+	display: none;
+}
+
+.cursorHover .iconDefault,
+.cursorHover .iconClick {
+	display: none;
+}
+.cursorHover .iconHover {
+	display: block;
+}
+
+.cursorClick .iconDefault,
+.cursorClick .iconHover {
+	display: none;
+}
+.cursorClick .iconClick {
+	display: block;
+}
+
 body.dark .customCursor {
 	color: rgba(255, 255, 255, 0.9);
 }
