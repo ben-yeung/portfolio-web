@@ -110,14 +110,17 @@ export default function CarouselRow({ projects, direction, inView }: CarouselRow
 
 			const setWidth = setWidthRef.current;
 			if (setWidth > 0 && root.offsetParent !== null) {
-				const rect = root.getBoundingClientRect();
+				// getBoundingClientRect() forces a synchronous layout reflow. Only call
+				// it when the pointer is inside — when it isn't, rowVelocity() short-circuits
+				// and never reads relX/rowWidth anyway, so the reflow buys nothing.
 				const p = pointerRef.current;
-				const overRow = p.inside && p.y >= rect.top && p.y <= rect.bottom;
+				const rect = p.inside ? root.getBoundingClientRect() : null;
+				const overRow = !!rect && p.y >= rect.top && p.y <= rect.bottom;
 				const { v, leftF, rightF } = rowVelocity({
 					pointerInside: p.inside,
 					pointerOverRow: overRow,
-					relX: p.x - rect.left,
-					rowWidth: rect.width,
+					relX: rect ? p.x - rect.left : 0,
+					rowWidth: rect ? rect.width : 0,
 					defaultDir: direction,
 					base: reducedRef.current ? BASE_REDUCED : BASE,
 					maxEdge: MAX_EDGE,

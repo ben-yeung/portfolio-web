@@ -28,7 +28,7 @@ export default function ProjectCard({ project, className, ariaHidden = false }: 
 		<div className={`${styles.projectCard}${className ? ` ${className}` : ""}`} aria-hidden={ariaHidden || undefined}>
 			<a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectCardLink} aria-label={`View ${project.title}`} tabIndex={ariaHidden ? -1 : undefined}>
 				<div className={styles.projectImageWrapper}>
-					<img src={project.image} alt={project.title} className={styles.projectImage} />
+					<img src={project.image} alt={project.title} className={styles.projectImage} loading="lazy" decoding="async" />
 					<div className={styles.projectOverlay}>
 						<HiArrowTopRightOnSquare className={styles.projectLinkIcon} />
 					</div>
