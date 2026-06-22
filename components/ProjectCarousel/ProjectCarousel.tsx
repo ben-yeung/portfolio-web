@@ -25,8 +25,8 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 
 	return (
 		<div ref={wrapperRef} className={styles.carousel} role="region" aria-label="Projects carousel">
-			<CarouselRow projects={rowTop} direction={1} inView={inView} />
-			<CarouselRow projects={rowBottom} direction={-1} inView={inView} />
+			<CarouselRow projects={rowTop} direction={-1} inView={inView} />
+			<CarouselRow projects={rowBottom} direction={1} inView={inView} />
 		</div>
 	);
 }
