@@ -50,6 +50,14 @@ export const projects: Project[] = [
 	},
 	{
 		id: 5,
+		title: "/reel-estates",
+		description: "A concept real-estate site with a content-first twist: properties are marketed through short-form video reels.",
+		tech: ["React", "TypeScript", "Next.js", "Motion"],
+		image: "/assets/reels.webp",
+		link: "https://github.com/ben-yeung/reel-estates",
+	},
+	{
+		id: 6,
 		title: "/openrouter-image-gen",
 		description: "OpenRouter wrapped interface (web + CLI) to generate images from prompts with split prompt capabilities.",
 		tech: ["React", "TypeScript", "Next.js", "OpenRouter"],
@@ -57,7 +65,7 @@ export const projects: Project[] = [
 		link: "https://github.com/ben-yeung/openrouter-image-gen",
 	},
 	{
-		id: 6,
+		id: 7,
 		title: "/novusys",
 		description: "A web3 wallet provider built on ERC-4337 using social sign-in and recovery. MV3 Chrome Extension + Launch Landing Site",
 		tech: ["React", "TypeScript", "Next.js", "🥇 Scaling ETH 2023 Finalist", "🥈 Gnosis Chain"],
@@ -65,7 +73,7 @@ export const projects: Project[] = [
 		link: "https://github.com/novusys/novusys",
 	},
 	{
-		id: 7,
+		id: 8,
 		title: "/novusys-paymaster",
 		description: "A React widget with a custom ERC-4337 paymaster allowing users to pay for entire transactions using Stripe or ERC-20 tokens.",
 		tech: ["React", "TypeScript", "Next.js", "🥇 ETHGlobal Tokyo 2023 Finalist"],
@@ -73,7 +81,7 @@ export const projects: Project[] = [
 		link: "https://github.com/novusys/novusys-paymaster",
 	},
 	{
-		id: 8,
+		id: 9,
 		title: "/nft-vision",
 		description: "A Discord bot capable of scraping NFT floor prices based on metadata filters, normalized rankings, and marketplaces.",
 		tech: ["TypeScript", "Python", "DiscordJS", "MongoDB"],
